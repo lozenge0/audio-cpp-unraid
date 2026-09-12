@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Container version="2">
+  <Name>audio-cpp</Name>
+  <Repository>ghcr.io/0xshug0/audio.cpp:full-cpu</Repository>
+  <Registry>https://github.com/0xShug0/audio.cpp/pkgs/container/audio.cpp</Registry>
+  <Network>bridge</Network>
+  <Shell>bash</Shell>
+  <Privileged>false</Privileged>
+  <Beta>true</Beta>
+  <Category>Tools:</Category>
+  <WebUI>http://[IP]:[PORT:8080]/</WebUI>
+  <Icon>https://raw.githubusercontent.com/lozenge0/audio-cpp-unraid/main/assets/icon.svg</Icon>
+  <Project>https://github.com/0xShug0/audio.cpp</Project>
+  <Support>https://github.com/lozenge0/audio-cpp-unraid/issues</Support>
+  <TemplateURL>https://raw.githubusercontent.com/lozenge0/audio-cpp-unraid/main/templates/audio-cpp.xml</TemplateURL>
+  <ReadMe>https://raw.githubusercontent.com/lozenge0/audio-cpp-unraid/main/README.md</ReadMe>
+  <Overview>audio.cpp for Unraid: community-maintained installation templates using unmodified upstream Docker images and the native WebUI/audio API. Choose CPU, NVIDIA CUDA 12, or NVIDIA CUDA 13 when installing. No models or personal configuration are bundled. Images follow upstream rolling Docker builds, not exclusively numbered releases. DRAFT: isolated runtime and private installation tests passed on one host; public branch selection and full release acceptance remain pending. See the README for tested images and limitations. Not ready for public submission.</Overview>
+  <Requires>Trusted-network access only: this setup provides no authentication. Runs as UID 99/GID 100 using Docker --user; model storage must be writable by this identity. Model downloads require network access and adequate storage. CPU variant: no GPU runtime required. Review the README before installation.</Requires>
+  <DefaultTagDescription>CPU — no GPU required; upstream rolling image</DefaultTagDescription>
+  <ExtraParams>--user=99:100</ExtraParams>
+  <PostArgs>server --ui --ui-management --host 0.0.0.0 --port 8080 --backend cpu</PostArgs>
+  <Config Name="WebUI / API port" Target="8080" Default="8080" Mode="tcp" Description="Host HTTP port. Change this if another container uses it; leave the container port at 8080. No authentication is provided." Type="Port" Display="always" Required="true" Mask="false">8080</Config>
+  <Config Name="Model storage" Target="/app/models" Default="/mnt/user/appdata/audio-cpp/models" Mode="rw" Description="Persistent model packages downloaded through the upstream WebUI. Must be writable by UID 99/GID 100, set through Docker --user in Extra Parameters. Existing folders may need a permissions review; PUID/PGID are not supported. No models are preselected or bundled." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/audio-cpp/models</Config>
+  <!-- CA replaces branch Config lists wholesale: retain every shared field. -->
+  <Branch>
+    <Tag>full-cuda12</Tag>
+    <TagDescription>NVIDIA — CUDA 12; upstream rolling image</TagDescription>
+    <Repository>ghcr.io/0xshug0/audio.cpp:full-cuda12</Repository>
+    <Requires>NVIDIA Driver plugin with a compatible GPU and host driver, and the NVIDIA container runtime. Trusted-network access only: no authentication. Runs as UID 99/GID 100 using Docker --user; model storage must be writable by this identity. Hardware and model compatibility require validation; see README.</Requires>
+    <ExtraParams>--user=99:100 --runtime=nvidia</ExtraParams>
+    <PostArgs>server --ui --ui-management --host 0.0.0.0 --port 8080 --backend cuda</PostArgs>
+    <Config Name="WebUI / API port" Target="8080" Default="8080" Mode="tcp" Description="Host HTTP port. Change this if another container uses it; leave the container port at 8080. No authentication is provided." Type="Port" Display="always" Required="true" Mask="false">8080</Config>
+    <Config Name="Model storage" Target="/app/models" Default="/mnt/user/appdata/audio-cpp/models" Mode="rw" Description="Persistent model packages downloaded through the upstream WebUI. Must be writable by UID 99/GID 100, set through Docker --user in Extra Parameters. Existing folders may need a permissions review; PUID/PGID are not supported. No models are preselected or bundled." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/audio-cpp/models</Config>
+    <Config Name="NVIDIA GPU selection" Target="NVIDIA_VISIBLE_DEVICES" Default="all" Mode="" Description="Upstream default all exposes every NVIDIA GPU. On multi-GPU systems, select one GPU UUID from nvidia-smi -L. Exposing several GPUs does not enable distributed inference. Container device numbering may differ from the host." Type="Variable" Display="always" Required="true" Mask="false">all</Config>
+    <Config Name="NVIDIA driver capabilities" Target="NVIDIA_DRIVER_CAPABILITIES" Default="compute,utility" Mode="" Description="CUDA compute and NVIDIA monitoring. Keep compute,utility for this CUDA variant." Type="Variable" Display="advanced" Required="true" Mask="false">compute,utility</Config>
+  </Branch>
+  <Branch>
+    <Tag>full-cuda13</Tag>
+    <TagDescription>NVIDIA — CUDA 13; compatible GPU and newer driver required</TagDescription>
+    <Repository>ghcr.io/0xshug0/audio.cpp:full-cuda13</Repository>
+    <Requires>NVIDIA Driver plugin, a CUDA 13-compatible GPU and host driver, and the NVIDIA container runtime. CUDA 13 excludes pre-Turing architectures; newer hardware alone does not establish compatibility. Trusted-network access only: no authentication. Runs as UID 99/GID 100 using Docker --user; model storage must be writable by this identity. See README.</Requires>
+    <ExtraParams>--user=99:100 --runtime=nvidia</ExtraParams>
+    <PostArgs>server --ui --ui-management --host 0.0.0.0 --port 8080 --backend cuda</PostArgs>
+    <Config Name="WebUI / API port" Target="8080" Default="8080" Mode="tcp" Description="Host HTTP port. Change this if another container uses it; leave the container port at 8080. No authentication is provided." Type="Port" Display="always" Required="true" Mask="false">8080</Config>
+    <Config Name="Model storage" Target="/app/models" Default="/mnt/user/appdata/audio-cpp/models" Mode="rw" Description="Persistent model packages downloaded through the upstream WebUI. Must be writable by UID 99/GID 100, set through Docker --user in Extra Parameters. Existing folders may need a permissions review; PUID/PGID are not supported. No models are preselected or bundled." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/audio-cpp/models</Config>
+    <Config Name="NVIDIA GPU selection" Target="NVIDIA_VISIBLE_DEVICES" Default="all" Mode="" Description="Upstream default all exposes every NVIDIA GPU. On multi-GPU systems, select one GPU UUID from nvidia-smi -L. Exposing several GPUs does not enable distributed inference. Container device numbering may differ from the host." Type="Variable" Display="always" Required="true" Mask="false">all</Config>
+    <Config Name="NVIDIA driver capabilities" Target="NVIDIA_DRIVER_CAPABILITIES" Default="compute,utility" Mode="" Description="CUDA compute and NVIDIA monitoring. Keep compute,utility for this CUDA variant." Type="Variable" Display="advanced" Required="true" Mask="false">compute,utility</Config>
+  </Branch>
+</Container>
