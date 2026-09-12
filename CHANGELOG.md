@@ -15,7 +15,7 @@
   and restart regression tests; owner subsequently confirmed playback.
 - Public CA branch selection, full DockerMan/scheduled update workflows and
   optional JSON configuration remain outstanding; no full acceptance claim.
-- Reconciled release review and explicit publication file list; no public push.
+- Reconciled release review and explicit publication file list.
 - Upstream artwork-independent community icon supplied by the project owner.
 - Owner approved MIT for integration files and CC0 1.0 for the icon on September
   12, limited to rights they hold; upstream licences are unchanged.
@@ -26,7 +26,10 @@
   original artwork unchanged.
 - Prepared least-privilege, commit-pinned GitHub Actions CI, Dependabot action
   updates, contribution/security guidance and a standalone Git publishing checklist.
-  Hosted CI and repository settings remain unverified until approved publication.
+- September 13: published the approved GitHub review draft with a clean signed
+  history and noreply commit identity. First hosted CI passed all 25 checks;
+  public links/file hashes and recorded repository security settings verified.
 
-No public release has been made. Version numbers describe the Unraid integration,
+No public versioned release has been made; the GitHub repository is a review draft.
+Version numbers describe the Unraid integration,
 not upstream audio.cpp. v1.0.0 is reserved for a validated stable integration.

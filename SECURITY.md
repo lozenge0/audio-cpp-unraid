@@ -9,10 +9,11 @@ networks and do not expose it directly to the internet. Model storage permission
 and GPU access are described in the [README](README.md#security).
 
 Do not post credentials, private audio or exploitable vulnerability details in
-public issues. After GitHub publication and enablement, use the repository's
+public issues. Use the repository's
 **Security → Advisories → Report a vulnerability** option for sensitive integration
-reports. That channel is not live or verified in this local draft. Enabling and
-checking it is part of the [publication checklist](docs/PUBLISHING.md).
+reports. Private vulnerability reporting was enabled and verified through
+GitHub's API on September 13, 2026; the advisories page is live. See the
+[publication checklist](docs/PUBLISHING.md).
 If it is unavailable, request a private reporting channel in a public issue
 without including sensitive details. Follow upstream's own reporting policy for
 vulnerabilities in audio.cpp; do not assume this integration can fix them.

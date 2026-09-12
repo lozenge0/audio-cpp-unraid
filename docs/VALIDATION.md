@@ -22,7 +22,7 @@ passing one variant does not complete every clause for all variants.
 | Image update / retained-container rollback | Passed controlled CUDA 13 test, not full DockerMan or scheduled updates |
 | Public branch selector / variant switching | Pending supported workflow validation |
 | Optional JSON / residency limits / failure recovery | Incomplete; personal deployment results do not substitute |
-| Artwork / licensing / public links / CA scan | MIT/CC0 approved September 12; local artwork/metadata review passed; actual CA rendering, live links and CA scan pending |
+| Artwork / licensing / public links / CA scan | MIT/CC0 approved September 12; local artwork/metadata review and September 13 live-link checks passed; actual CA rendering and CA scan pending |
 
 The owner confirmed the fixed CPU test is "working well". No new runtime tests
 or server changes were made during this documentation reconciliation.
@@ -192,9 +192,10 @@ the protocol below is not a claim that every clause has been completed.
   Owner confirmed generation from their own prompts using Claude/AI. Visual
   rendering and publication/reuse-licensing approval were pending at this review.
   Update September 12: MIT/CC0 approved; local visual/metadata review passed.
-  Actual CA rendering and publication remain pending; see RELEASE-REVIEW.md.
+  September 13: GitHub draft published; actual CA rendering remains pending.
+  See RELEASE-REVIEW.md for the publication verification record.
 - GitHub destination is lozenge0/audio-cpp-unraid with repository Issues for
-  support. Local metadata URLs are updated; remote availability is unverified.
+  support. September 13: public metadata URLs and remote file hashes verified.
 - No test container was deployed, registry image pulled, live service changed,
   GitHub repository published or CA submission made by this preparation stage.
 

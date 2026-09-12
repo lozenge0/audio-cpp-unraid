@@ -1,14 +1,15 @@
 # Release review — GitHub review draft
 
-Updated 2026-09-12. Target: **audio.cpp for Unraid v0.1.0**. Public GitHub draft
-publication is approved and being prepared; no beta release or CA submission is
+Updated 2026-09-13 (Europe/London). Target: **audio.cpp for Unraid v0.1.0**.
+The public GitHub review draft is published; no beta release or CA submission is
 approved. This is the current tracker; dated test reports preserve what was known
 during each experiment.
 
 ## Proposed repository
 
 - Owner/repository: `lozenge0/audio-cpp-unraid`; default branch: `main`.
-- Support: repository GitHub Issues. Public links are configured, not verified live.
+- Support: repository GitHub Issues. Repository/Issues/advisories pages returned
+  HTTP 200; public README/template/profile/icon bytes match the local files.
 - Contents: Unraid template/profile, community artwork, documentation and local
   maintainer tests and CI only. No application code, custom image, runtime wrapper,
   preset model/configuration, personal voice or image-publishing workflow.
@@ -53,7 +54,8 @@ Before publishing any repository contents:
   Findings and follow-up verification are recorded below.
 - [x] Owner explicitly approves clean standalone initialization and public
   repository creation/push on September 12. No surrounding checkout/history.
-- [ ] Verify the initial public push, hosted CI and repository settings.
+- [x] Verify the initial public push, hosted CI and repository security settings
+  listed in the publication record below.
 
 Before calling v0.1.0 a Community Apps beta ready for submission:
 
@@ -64,7 +66,7 @@ Before calling v0.1.0 a Community Apps beta ready for submission:
   instructions. Controlled Engine recreation/rollback is narrower evidence.
 - [ ] Review scheduled updates safely or explicitly leave unattended updates
   unvalidated. Never invoke a host-wide updater to test one container.
-- [ ] Verify GitHub Issues and README/template/raw icon links after approved publication.
+- [x] Verify GitHub Issues and README/template/raw icon links after approved publication.
 - [ ] Validate public CA branch selection and installation fields using a supported
   preview/feed workflow; private pre-expanded entries cannot prove this.
 - [ ] Run CA Validate/Scan, resolve findings and obtain explicit submission approval.
@@ -130,7 +132,7 @@ Run `python3 -m unittest discover -s tests -v` from this directory. Checks cover
 structure, explicit file inventory, relative documentation links and selected
 accidental-data patterns. They are not a complete secret scanner, legal clearance,
 CA validation or proof of current upstream compatibility. The same tests are
-prepared for read-only GitHub Actions CI; hosted execution is not verified yet.
+used by read-only GitHub Actions CI; the first hosted run passed all 25 tests.
 No image build, custom CI credentials or server access is required.
 
 The September 12 licence update passed the then-current 21 checks. The subsequent
@@ -147,10 +149,36 @@ the suite includes 16 template, five publication and four CI policy checks.
 These CI checks inspect policy text, not the complete GitHub workflow schema.
 Final local verification: all **25 tests passed**, both YAML files parsed locally,
 and all three reviewers rechecked the final changes with no blocking findings
-for GitHub draft publication. Each independently reran the 25-test suite. Hosted
-CI execution, actual CA rendering and repository settings remain unverified.
+for GitHub draft publication. Each independently reran the 25-test suite.
+Actual CA rendering remains unverified; hosted CI and repository verification
+are recorded below.
 See [publishing steps](PUBLISHING.md) for author-email privacy, clean Git history,
 repository settings and first hosted-CI verification. The standard root MIT text
 and original SVG remain unchanged. The prepublication review involved no Git
 initialization, commits, server operations, GitHub writes or CA submissions.
 The owner subsequently approved the separate GitHub publication step above.
+
+## GitHub publication record — September 13 (Europe/London)
+
+- Public repository: [lozenge0/audio-cpp-unraid](https://github.com/lozenge0/audio-cpp-unraid),
+  default branch `main`, Issues enabled. No release/tag or CA submission created.
+- Fresh signed root commit: `d40ecdfe65dc24509d144264c289ac51e06223c2`, containing
+  exactly the 26 reviewed files, no parent history. Author and committer use the
+  owner's approved GitHub noreply identity; GitHub reports the signature verified.
+- [First hosted validation](https://github.com/lozenge0/audio-cpp-unraid/actions/runs/34725657862)
+  passed all 25 tests. The first Dependabot Actions update check also completed
+  successfully. No custom CI secrets, image builds or server access were added.
+- Workflow token default is read-only; Actions cannot approve PRs. Fork workflows
+  require approval for all external contributors. Private vulnerability reporting,
+  secret scanning and secret push protection are enabled; auto-merge is disabled.
+- Public repository, Issues and advisories links returned HTTP 200. Downloaded
+  README/template/profile/icon hashes match local files; the original icon is
+  unchanged. This does not validate the CA UI or public branch picker.
+- The extra publication-settings subagent hit a usage limit; the earlier three
+  independent file/CI reviews remain valid. Remaining settings were verified
+  directly against GitHub documentation and API responses, not claimed as a new
+  successful independent review.
+
+The first commit and CI timestamps are September 12 in UTC (after midnight
+September 13 locally). Dated runtime evidence has not been rerun for publication.
+No Unraid operations were performed.

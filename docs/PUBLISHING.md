@@ -33,10 +33,9 @@ Approved initialization procedure:
    do not overwrite an existing repository or auto-add competing licence/README
    files. Verify the remote before pushing `main`. Do not force-push.
 
-Keep the README and template labelled draft during GitHub review. Once actually
-published, update the local-only status statements and the status test in
-`tests/test_template.py` to reflect reality, without claiming CA acceptance.
-No integration release tag or CA submission is part of this initial push.
+The draft was published on September 13 (Europe/London); publication checks are
+recorded in RELEASE-REVIEW.md. Keep the README and template labelled draft during
+GitHub review. No integration release tag or CA submission is part of this push.
 
 ## CI and repository settings
 

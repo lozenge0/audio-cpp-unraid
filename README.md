@@ -222,10 +222,12 @@ live registry availability, hardware, browser workflows, or installation success
 Follow [the release review](docs/RELEASE-REVIEW.md) and
 [full acceptance checklist](docs/VALIDATION.md) before any release.
 
-The prepared GitHub Actions workflow runs these tests on pushes, pull requests
+The GitHub Actions workflow runs these tests on pushes, pull requests
 and manual dispatch, with no custom secrets, image builds or server access.
 Dependabot proposes CI action updates for review, not container updates.
-See [contribution guidance](CONTRIBUTING.md) and [security reporting](SECURITY.md).
+The [first hosted run](https://github.com/lozenge0/audio-cpp-unraid/actions/runs/34725657862)
+passed all 25 checks. See [contribution guidance](CONTRIBUTING.md) and
+[security reporting](SECURITY.md).
 
 First publish a clearly labelled GitHub draft for owner review, after independent
 file/artwork review and explicit creation/push approval. Use a clean standalone
