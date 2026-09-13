@@ -34,7 +34,7 @@ or server changes were made during this documentation reconciliation.
 Today's official `full-cpu` image, pinned at revision `5bea9c7`, passed repeated
 `hello` and longer speech in offline API, native Studio and explicit model-streaming
 tests, including a fresh-process repeat. Model hashes/permissions and all saved
-Unraid configurations were preserved. See [CPU retest results](CPU-RETEST-20260912.md).
+Unraid configurations were preserved. See [CPU retest results](reports/CPU-RETEST-20260912.md).
 The specific short-text crash gate is cleared for this tested image/model/host;
 full release acceptance is not implied. Current Studio offers Alba for Pocket TTS;
 the former male demo voice passed API/streaming tests separately.
@@ -46,7 +46,7 @@ was stopped and retained to free that port; the personal container remains untou
 
 The independently reviewed isolated image update and retained-container rollback
 passed short/long API speech, Studio generation, CUDA computation, configuration
-and model-data checks. See [full results](UPDATE-ROLLBACK-TEST.md). The original
+and model-data checks. See [full results](reports/UPDATE-ROLLBACK-TEST.md). The original
 pinned CUDA 13 test was restored and running at that test's completion; it was
 later stopped for the September 12 CPU retest. This is not CA scheduled-updater
 or full DockerMan-update acceptance.
@@ -116,7 +116,7 @@ The owner subsequently reported a successful restart and model reuse without
 redownloading. Inspection before the recreation phase confirmed the new process
 start and retained settings. The separately approved same-image recreation also
 passed API/browser inference and integrity checks; see
-[recreation results](RECREATION-TEST.md). Distinct-image updates, rollback and
+[recreation results](reports/RECREATION-TEST.md). Distinct-image updates, rollback and
 JSON persistence remain separate acceptance gates.
 
 ### CPU failure and follow-up
@@ -149,15 +149,15 @@ found the official CPU image at revision `05f9c5d`, including the fix, with dige
 `sha256:370e71fc53d921f42ad48a40278443cd0bff87e96988f7e6ad571e463a056499`.
 Neither upstream acknowledgement nor the CUDA pass validates the fix for our
 short-text CPU case. That block was subsequently cleared for the tested September
-12 image by the [fixed-image retest](CPU-RETEST-20260912.md), not by source review alone.
+12 image by the [fixed-image retest](reports/CPU-RETEST-20260912.md), not by source review alone.
 
 The isolated CPU fresh-install test on 2026-09-06 started successfully and the
 native WebUI rendered, but browser model download failed because DockerMan's
 99:100/0755 model directory was not writable by the image's UID 1000 user.
-See [first-run findings](FIRST-RUN-FINDINGS.md) for exact image identity and
+See [first-run findings](reports/FIRST-RUN-FINDINGS.md) for exact image identity and
 evidence. A subsequently approved `--user=99:100` experiment passed browser
 downloads, browser/API inference for all three variants, CPU/CUDA13 restart and
-CUDA12 recreation checks. See [user-identity results](USER-IDENTITY-TESTS.md).
+CUDA12 recreation checks. See [user-identity results](reports/USER-IDENTITY-TESTS.md).
 The local draft adopted the override in all three variants on 2026-09-07, with
 matching structural checks and setup guidance. Subsequent private UI and controlled
 CUDA 13 lifecycle results are recorded above. Full acceptance remains incomplete;
@@ -214,7 +214,7 @@ the personal deployment passed a similar check.
 
 ## 1. Template and branch checks
 
-The [UI preflight](UI-TEST-PREFLIGHT.md) found that installed CA 2026.07.21 private
+The [UI preflight](reports/UI-TEST-PREFLIGHT.md) found that installed CA 2026.07.21 private
 apps do not expand branches. Pre-expanded private XMLs can test each variant's
 installation handoff, but the public selector needs a supported feed/preview
 workflow. An authenticated owner browser session is also required.

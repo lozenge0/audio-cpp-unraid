@@ -37,13 +37,13 @@ Dated test reports in this folder preserve what was known during each experiment
 | Area | Supported conclusion | Evidence |
 | --- | --- | --- |
 | Template | Three complete configurations. Upstream-only launch and native identity controls | `tests/test_template.py` |
-| Fresh storage | Native downloads work as 99:100 without ownership-changing helpers | [Identity tests](USER-IDENTITY-TESTS.md) |
+| Fresh storage | Native downloads work as 99:100 without ownership-changing helpers | [Identity tests](reports/USER-IDENTITY-TESTS.md) |
 | Private CA install | Owner installed pre-expanded CPU/CUDA 12/CUDA 13 entries, not the public selector | [UI evidence](VALIDATION.md) |
-| CPU regression | Fixed revision `5bea9c7` passes short/long offline, Studio, streaming and restart tests. Owner playback confirmed | [CPU retest](CPU-RETEST-20260912.md) |
+| CPU regression | Fixed revision `5bea9c7` passes short/long offline, Studio, streaming and restart tests. Owner playback confirmed | [CPU retest](reports/CPU-RETEST-20260912.md) |
 | CUDA inference | Both variants initialized/computed with CUDA and passed API/Studio tests | [Validation](VALIDATION.md) |
-| Restart/model reuse | Files persist. Some clients must re-register models after a restart | [Identity tests](USER-IDENTITY-TESTS.md) |
-| Same-image recreation | Controlled CUDA 13 recreation preserves settings and model data | [Recreation](RECREATION-TEST.md) |
-| Update/rollback | Controlled CUDA 13 upgrade and restoration of retained old container passed. Not the full DockerMan/scheduler path | [Update/rollback](UPDATE-ROLLBACK-TEST.md) |
+| Restart/model reuse | Files persist. Some clients must re-register models after a restart | [Identity tests](reports/USER-IDENTITY-TESTS.md) |
+| Same-image recreation | Controlled CUDA 13 recreation preserves settings and model data | [Recreation](reports/RECREATION-TEST.md) |
+| Update/rollback | Controlled CUDA 13 upgrade and restoration of retained old container passed. Not the full DockerMan/scheduler path | [Update/rollback](reports/UPDATE-ROLLBACK-TEST.md) |
 
 The old CPU image's `hello` crash remains a historical failure. The owner confirmed
 the fixed test was "working well" after automated checks. This is listening
@@ -95,47 +95,17 @@ The sequence follows [CA submission guidance](https://ca.unraid.net/submit/help)
 public active repository, OSI-approved root licence, profile/template metadata,
 then Validate/Scan.
 
-## Exact proposed file list
+## Repository contents
 
-Only these relative paths belong in the repository. The publication tests
-enforce this list from Git's file inventory, so ignored caches do not count.
-
-```text
-.github/dependabot.yml
-.github/workflows/validate.yml
-.gitignore
-CHANGELOG.md
-CONTRIBUTING.md
-LICENSE
-README.md
-SECURITY.md
-assets/README.md
-assets/icon.png
-assets/icon.svg
-ca_profile.xml
-docs/CONFIGURATION.md
-docs/CPU-RETEST-20260912.md
-docs/FIRST-RUN-FINDINGS.md
-docs/MAINTAINER.md
-docs/PLAN.md
-docs/PUBLISHING.md
-docs/RECREATION-TEST.md
-docs/RELEASE-REVIEW.md
-docs/SHORT-TEXT-INVESTIGATION.md
-docs/UI-TEST-PREFLIGHT.md
-docs/UPDATE-ROLLBACK-TEST.md
-docs/USER-IDENTITY-TESTS.md
-docs/VALIDATION.md
-templates/audio-cpp.xml
-tests/test_ci.py
-tests/test_publication.py
-tests/test_template.py
-```
+The publication test in `tests/test_publication.py` holds the exact list of
+files that belong in the repository and compares it with Git's file inventory.
+Add a new file to that list only after a publication-safety review.
 
 Never include the parent checkout/history, `speak.sh`, `.devops/unraid`, SSH/API
 credentials, test harnesses, raw Docker inspections, WAVs/screenshots, downloaded
-models, personal configuration or original icon pack. Reports here contain selected
-technical evidence. Raw artifacts stay outside this folder.
+models, personal configuration or original icon pack. Reports under
+`docs/reports/` contain selected technical evidence. Raw artifacts stay outside
+the repository.
 
 ## Local review procedure
 

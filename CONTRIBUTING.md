@@ -16,10 +16,12 @@ Before proposing a change:
 
 1. Explain its purpose and keep changes scoped to the integration.
 2. Run `python3 -m unittest discover -s tests -v` from the repository root.
-3. If adding a file, review its publication safety and update both the explicit
-   inventory in `tests/test_publication.py` and [release review](docs/RELEASE-REVIEW.md).
-4. Update setup guidance and the changelog when behavior changes. Record runtime
-   tests separately from local structural tests; CI has no Unraid server or GPU.
+3. If adding a file, review its publication safety and add it to the explicit
+   inventory in `tests/test_publication.py`.
+4. If behavior changes, update setup guidance and the changelog. If the change
+   affects installed users, add an entry to the template's `Changes` field.
+   Record runtime tests in a dated report under `docs/reports/`. CI has no
+   Unraid server or GPU.
 
 Pull requests run read-only CI on GitHub-hosted runners. Passing CI does not prove
 hardware compatibility or CA acceptance. Action updates are proposed by Dependabot

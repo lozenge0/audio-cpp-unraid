@@ -22,12 +22,13 @@ EXPECTED = {
     '.gitignore', 'CHANGELOG.md', 'LICENSE', 'README.md',
     'CONTRIBUTING.md', 'SECURITY.md',
     'assets/README.md', 'assets/icon.svg', 'assets/icon.png', 'ca_profile.xml',
-    'docs/CONFIGURATION.md', 'docs/MAINTAINER.md',
-    'docs/CPU-RETEST-20260912.md', 'docs/FIRST-RUN-FINDINGS.md',
-    'docs/PLAN.md', 'docs/PUBLISHING.md', 'docs/RECREATION-TEST.md', 'docs/RELEASE-REVIEW.md',
-    'docs/SHORT-TEXT-INVESTIGATION.md', 'docs/UI-TEST-PREFLIGHT.md',
-    'docs/UPDATE-ROLLBACK-TEST.md', 'docs/USER-IDENTITY-TESTS.md',
-    'docs/VALIDATION.md', 'templates/audio-cpp.xml',
+    'docs/CONFIGURATION.md', 'docs/MAINTAINER.md', 'docs/RELEASE-REVIEW.md',
+    'docs/VALIDATION.md',
+    'docs/reports/CPU-RETEST-20260912.md', 'docs/reports/FIRST-RUN-FINDINGS.md',
+    'docs/reports/RECREATION-TEST.md', 'docs/reports/SHORT-TEXT-INVESTIGATION.md',
+    'docs/reports/UI-TEST-PREFLIGHT.md', 'docs/reports/UPDATE-ROLLBACK-TEST.md',
+    'docs/reports/USER-IDENTITY-TESTS.md',
+    'templates/audio-cpp.xml',
     'tests/test_ci.py', 'tests/test_publication.py', 'tests/test_template.py',
 }
 
@@ -38,16 +39,16 @@ class PublicationTests(unittest.TestCase):
         config = (ROOT / 'docs/CONFIGURATION.md').read_text()
         maintainer = (ROOT / 'docs/MAINTAINER.md').read_text()
         for heading in ('## What can I use it for?', '## Install on Unraid',
-                        '## Make your first speech sample', '## Security'):
+                        '## Make your first speech sample', '## Security',
+                        '## Already installed?'):
             self.assertIn(heading, readme)
-        self.assertIn('no login or API authentication', readme)
         self.assertIn('(docs/RELEASE-REVIEW.md)', readme)
         self.assertIn('(docs/CONFIGURATION.md)', readme)
         self.assertIn('(docs/MAINTAINER.md)', readme)
+        # Tuning flags stay out of the first-time guide.
         self.assertNotIn('--max-loaded-models', readme)
         self.assertIn('--max-loaded-models', config)
-        self.assertIn('not yet been integration-tested', config)
-        self.assertIn('Run from the repository root', maintainer)
+        self.assertIn('python3 -m unittest discover -s tests', maintainer)
 
     def test_approved_licence_scopes(self):
         licence = (ROOT / 'LICENSE').read_text()
@@ -56,8 +57,8 @@ class PublicationTests(unittest.TestCase):
         self.assertTrue(licence.startswith('MIT License\n'))
         self.assertIn('CC0-1.0', artwork)
         self.assertIn('https://creativecommons.org/publicdomain/zero/1.0/legalcode.en', artwork)
-        self.assertIn('to the extent they hold copyright and related rights', artwork)
-        self.assertIn('The icon is separately dedicated under CC0', readme)
+        self.assertIn('CC0', readme)
+        self.assertIn('(assets/README.md)', readme)
 
     def test_exact_candidate_inventory(self):
         actual = candidate_files()
@@ -67,14 +68,6 @@ class PublicationTests(unittest.TestCase):
             self.assertTrue(path.is_file(), f'Tracked file missing: {name}')
         self.assertEqual(actual, EXPECTED,
                          'Review unexpected files before expanding the publication list')
-
-    def test_review_lists_exact_candidate(self):
-        review = (ROOT / 'docs/RELEASE-REVIEW.md').read_text()
-        manifest = re.search(r'```text\n(.*?)\n```', review, re.DOTALL)
-        self.assertIsNotNone(manifest)
-        entries = manifest.group(1).splitlines()
-        self.assertEqual(len(entries), len(set(entries)))
-        self.assertEqual(set(entries), EXPECTED)
 
     def test_relative_markdown_links_stay_inside_candidate(self):
         for name in sorted(EXPECTED):

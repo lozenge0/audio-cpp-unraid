@@ -1,54 +1,39 @@
 # Changelog
 
-## Unreleased — targeting v0.1.0
+User-facing changes to the Unraid integration. The format follows
+[Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Version numbers
+describe this integration, not upstream audio.cpp. `v1.0.0` is reserved for a
+validated stable integration. Entries that affect installed users are mirrored
+in the template's `Changes` field, which Community Apps shows as the app changelog.
 
-- Added a `Changes` field to the template so Community Apps shows a changelog
-  to users who already installed the app.
-- Project status now lives in one place, the top of `docs/RELEASE-REVIEW.md`.
-  Other documents link to it. Removed internal review narrative and stale test
-  and file counts from the public documentation.
-- The publication inventory test now reads Git's file list, so `pytest` caches
-  and other ignored files no longer fail it. Tests check document structure and
-  links rather than exact status sentences.
-- Added a PNG export of the existing community artwork and switched template/profile
-  icon URLs to PNG for Docker Manager compatibility. Original SVG preserved.
-- Changed the default host WebUI/API port to `6969` for CPU, CUDA 12 and CUDA 13
-  installations. Internal port `8080` and WebUI port resolution remain unchanged;
-  existing installations retain their configured host port.
-- Reworked the README around first-time use, hardware choice, installation and a
-  first speech sample. Moved detailed configuration, validation context and
-  maintainer notes into linked guides without changing container settings.
-- Added AI alongside Tools categorization for the base app and inherited CUDA
-  variants. Replaced pre-submission wording after owner-reported CA auto-approval;
-  beta status, catalog visibility uncertainty and remaining runtime checks retained.
-- Initial draft: one Community Apps template with CPU, CUDA 12 and CUDA 13 variants.
-- Direct moving upstream image references; no application builds or runtime wrappers.
-- Native model storage, network port and NVIDIA selection fields.
-- Native Docker `--user=99:100` for all variants, matching tested Unraid-created
-  model-directory ownership without modifying upstream images or file permissions.
-- Isolated CPU/CUDA 12/CUDA 13 downloads and browser/API inference, plus
-  owner-operated installation of pre-expanded private CA templates.
-- Controlled CUDA 13 recreation, newer-image update and retained-container
-  rollback with configuration/model integrity checks.
-- September 12 fixed official CPU image passed short-text, explicit streaming
-  and restart regression tests; owner subsequently confirmed playback.
-- Public CA branch selection, full DockerMan/scheduled update workflows and
-  optional JSON configuration remain outstanding; no full acceptance claim.
-- Reconciled release review and explicit publication file list.
-- Upstream artwork-independent community icon supplied by the project owner.
-- Owner approved MIT for integration files and CC0 1.0 for the icon on September
-  12, limited to rights they hold; upstream licences are unchanged.
-- Local structural checks and a deployment acceptance checklist.
-- Independent pre-GitHub template/privacy review; removed a host-specific GPU
-  prefix from a test fixture, clarified optional JSON validation and image ID labels.
-- Local light/dark icon previews and read-only embedded metadata inspection;
-  original artwork unchanged.
-- Prepared least-privilege, commit-pinned GitHub Actions CI, Dependabot action
-  updates, contribution/security guidance and a standalone Git publishing checklist.
-- September 13: published the approved GitHub review draft with a clean signed
-  history and noreply commit identity. First hosted CI passed. Public links,
-  file hashes and recorded repository security settings verified.
+## [Unreleased]
 
-No public versioned release has been made; the GitHub repository is a review draft.
-Version numbers describe the Unraid integration,
-not upstream audio.cpp. v1.0.0 is reserved for a validated stable integration.
+Targeting `v0.1.0`, the first beta release.
+
+### Added
+
+- Community Apps template for audio.cpp with CPU, NVIDIA CUDA 12 and NVIDIA
+  CUDA 13 variants, using unmodified upstream Docker images.
+- Model storage, host port and NVIDIA GPU selection fields.
+- A `Changes` field in the template so Community Apps shows release notes.
+- A PNG export of the community icon for the Unraid Docker page.
+- First-time user guide in the README, with configuration, maintainer and
+  validation notes under `docs/`.
+
+### Changed
+
+- New installations default to host port `6969`. Existing installations keep
+  their configured port.
+- Every variant runs as Docker user `99:100`, which matches the ownership of
+  model folders that Unraid creates. No image or file permissions are changed.
+
+### Fixed
+
+- The Unraid Docker page showed no icon because the template pointed at an SVG.
+  Docker Manager caches icons as PNG.
+
+### Known limitations
+
+- Public Community Apps branch selection, scheduled container updates and the
+  optional JSON configuration path are not yet validated. See the
+  [release review](docs/RELEASE-REVIEW.md).

@@ -162,6 +162,8 @@ container is recreated. We run no image-building or image-mirroring pipeline.
 Updates remain on the selected CPU/CUDA tag; they do not switch backend, upgrade
 host drivers, update model weights, or safely migrate every installation setting.
 Template changes are not a universal migration mechanism for installed containers.
+The README section [Already installed?](../README.md#already-installed) lists
+the template changes that an existing installation can adopt by hand.
 An existing installation is not automatically migrated to UID `99` / GID `100`
 by this template change. Review its current identity and storage before adopting
 the setting; preserve the matching identity throughout an image update/rollback.
