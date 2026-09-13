@@ -2,6 +2,8 @@
 
 ## Unreleased — targeting v0.1.0
 
+- Added a PNG export of the existing community artwork and switched template/profile
+  icon URLs to PNG for Docker Manager compatibility. Original SVG preserved.
 - Changed the default host WebUI/API port to `6969` for CPU, CUDA 12 and CUDA 13
   installations. Internal port `8080` and WebUI port resolution remain unchanged;
   existing installations retain their configured host port.

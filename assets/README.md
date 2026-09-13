@@ -4,6 +4,18 @@
 the white waveform on a blue/violet tile. Only a final newline was added; artwork
 and original SVG metadata are preserved. It requires no external font.
 
+`icon.png` is a 256 × 256 raster export of that same artwork for the Community
+Apps profile and Docker template. Docker Manager uses PNG-oriented icon caching
+and rendering; the SVG remains the unchanged source asset. From the repository
+root, export with:
+
+```sh
+rsvg-convert --width 256 --height 256 --output assets/icon.png assets/icon.svg
+```
+
+The raster export does not carry the SVG's embedded provenance metadata; that
+metadata remains in the original SVG. No artwork was regenerated or redesigned.
+
 On 2026-09-06, the project owner (`lozenge0`) confirmed that the artwork was
 generated from scratch using their own prompts with Claude/AI, without supplied
 third-party images or assets. This records the owner's provenance statement;
@@ -13,7 +25,7 @@ it is not an independent originality, copyright or trademark clearance.
 
 On 2026-09-12, the project owner (`lozenge0`) approved applying
 [CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/) to
-`icon.svg`, to the extent they hold copyright and related rights in it.
+`icon.svg` and its `icon.png` export, to the extent they hold copyright and related rights in them.
 The [CC0 legal code](https://creativecommons.org/publicdomain/zero/1.0/legalcode.en)
 governs this dedication, including its waiver, fallback licence and disclaimers.
 SPDX identifier: `CC0-1.0`.
@@ -21,7 +33,7 @@ SPDX identifier: `CC0-1.0`.
 This does not assert that AI-generated artwork necessarily has copyright
 protection, clear third-party rights, or grant trademark rights. This is community
 integration artwork, not official audio.cpp branding or endorsement. The root MIT
-licence covers integration code/docs; `icon.svg` is separately covered by CC0.
+licence covers integration code/docs; both icon formats are separately covered by CC0.
 
 ## Maintainer presentation checks
 
