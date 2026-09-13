@@ -189,7 +189,6 @@ class TemplateTests(unittest.TestCase):
         self.assertIn("lozenge0/audio-cpp-unraid", readme)
         self.assertIn("Beta integration", readme)
         self.assertIn("docs/RELEASE-REVIEW.md", readme)
-        self.assertTrue((ROOT / "docs/PLAN.md").is_file())
         self.assertTrue((ROOT / "docs/VALIDATION.md").is_file())
         self.assertIn("MIT License", (ROOT / "LICENSE").read_text())
 

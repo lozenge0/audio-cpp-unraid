@@ -134,6 +134,21 @@ See [permissions](docs/CONFIGURATION.md#storage-permissions-and-process-identity
 and [updates/rollback](docs/CONFIGURATION.md#updates-persistence-and-rollback)
 for the details.
 
+## Already installed?
+
+Unraid does not update the template of a container that is already installed.
+Changes to this template apply to new installations only. The app's change log
+in the Apps tab lists each change. If you installed before 2026-09-13:
+
+- The default host port changed to `6969` for new installations. Your
+  container keeps its current port. Nothing to do.
+- The app icon changed to a PNG so that the Docker page can show it. To get
+  the new icon, remove the container (your model folder stays), then install
+  `audio-cpp` again from the Apps tab with the same port and folder. If the old
+  icon still shows, Unraid kept a cached copy at
+  `/boot/config/plugins/dockerMan/images/audio-cpp-icon.png`. Delete that file
+  and reload the Docker page.
+
 ## Need help?
 
 - **WebUI will not open:** check that the container is running, its logs, and the
