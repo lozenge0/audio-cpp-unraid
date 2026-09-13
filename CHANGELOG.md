@@ -15,6 +15,9 @@ Targeting `v0.1.0`, the first beta release.
 - Community Apps template for audio.cpp with CPU, NVIDIA CUDA 12 and NVIDIA
   CUDA 13 variants, using unmodified upstream Docker images.
 - Model storage, host port and NVIDIA GPU selection fields.
+- An AMD / Intel Vulkan variant using the upstream `full-vulkan` image, with a
+  `/dev/dri` device field. Published before any hardware test. The first
+  report is pending.
 - A `Changes` field in the template so Community Apps shows release notes.
 - A PNG export of the community icon for the Unraid Docker page.
 - First-time user guide in the README, with configuration, maintainer and
@@ -37,3 +40,5 @@ Targeting `v0.1.0`, the first beta release.
 - Public Community Apps branch selection, scheduled container updates and the
   optional JSON configuration path are not yet validated. See the
   [release review](docs/RELEASE-REVIEW.md).
+- The Vulkan variant has not been tested on hardware. It does not support
+  NVIDIA GPUs. NVIDIA users choose a CUDA variant.

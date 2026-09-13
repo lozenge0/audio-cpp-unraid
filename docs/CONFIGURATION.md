@@ -11,6 +11,7 @@ images and open acceptance checks are recorded in [the release review](RELEASE-R
 | CPU (base) | `ghcr.io/0xshug0/audio.cpp:full-cpu` | Supported CPU; no GPU runtime |
 | NVIDIA / CUDA 12 | `ghcr.io/0xshug0/audio.cpp:full-cuda12` | Compatible NVIDIA GPU, driver and NVIDIA runtime |
 | NVIDIA / CUDA 13 | `ghcr.io/0xshug0/audio.cpp:full-cuda13` | CUDA 13-compatible GPU, driver and NVIDIA runtime |
+| AMD / Intel — Vulkan | `ghcr.io/0xshug0/audio.cpp:full-vulkan` | AMD or Intel GPU with its kernel driver loaded and `/dev/dri` present |
 
 None of these variants has passed full deployment acceptance yet. The native
 user/group override now included in the draft passed isolated downloads and
@@ -23,12 +24,40 @@ Earlier personal CUDA 12 testing is not a substitute for a fresh installation.
 CUDA 13 excludes pre-Turing architectures; CUDA version alone does not prove
 that a particular card, driver, image and model combination works.
 
-Vulkan and HIP/ROCm are not offered by this draft. Upstream's
-[reviewed Docker workflow](https://github.com/0xShug0/audio.cpp/blob/5bea9c726881f6a7ce3e9adf18c060b5a6a8eb8e/.github/workflows/docker.yml)
-now includes `full-vulkan`; the earlier statement that upstream only built the
-three images above is outdated. A Vulkan branch still needs its own device,
-permission and hardware validation. No Vulkan or HIP/ROCm support is claimed here,
-and no additional branch or startup compilation has been added.
+### Vulkan variant
+
+The Vulkan branch was added on 2026-09-13 without a hardware test. The owner
+chose to publish it and collect the first report from a volunteer installation.
+It uses the upstream `full-vulkan` image, an Ubuntu image with `libvulkan1` and
+`mesa-vulkan-drivers`. Mesa supplies the AMD (RADV) and Intel (ANV) Vulkan
+drivers, so those GPUs need nothing inside the container. Mesa has no NVIDIA
+driver, so NVIDIA users must choose a CUDA variant. HIP/ROCm is not offered.
+
+The branch passes the host directory `/dev/dri` as a Docker device and starts
+the server with `--backend vulkan`. Upstream's documented command adds the host
+`render` and `video` groups. Unraid has no `render` group. Its `/dev/dri`
+nodes belong to `root:video` with mode `660` unless a plugin changes them. The
+branch therefore sets Extra Parameters to `--user=99:100 --group-add=18`. `18`
+is the numeric id of the Unraid `video` group, inherited from Slackware. The
+Intel GPU TOP and Radeon TOP plugins by ich777 load the kernel module. They
+also run `chmod -R 777 /dev/dri`, which makes the group irrelevant on those
+hosts. The kernel driver must be loaded on the host either way. The image
+cannot load it.
+
+Mesa also installs `llvmpipe`, a Vulkan device that runs on the CPU. If the
+container cannot open the GPU, the ggml Vulkan backend can still start on that
+device and speech works slowly. Use upstream's device listing to confirm which
+device is in use:
+
+```sh
+docker exec audio-cpp /app/entrypoint.sh server --backend vulkan --list-devices
+```
+
+The output lists one device per line, for example
+`Vulkan:0 "AMD Radeon RX 6600 (RADV NAVI23)" [gpu]`. A `[cpu]` device type or
+`No devices found` means the GPU is not reachable. `/health` reports
+`"backend":"vulkan"` but not the device. Upstream's `--device <index>` argument
+selects among several Vulkan devices. The template leaves it unset.
 
 Community Apps expands branches into installation configurations. A branch can
 replace launch arguments, Docker parameters and the **entire** Config list.
@@ -56,6 +85,9 @@ container name, unused host port and fresh storage directory**. The template's
    image's default visibility. Prefer a specific GPU UUID on multi-GPU systems;
    find it with `nvidia-smi -L` on the host. Driver capabilities are
    `compute,utility`. Exposing several GPUs is not distributed inference.
+   For Vulkan, keep **GPU device** at `/dev/dri`. Pass a single render node
+   such as `/dev/dri/renderD128` only if you know which node belongs to the
+   intended GPU.
 5. Start the container and open WebUI. Select/download models through upstream's
    own interface; no model or voice is forced by the template. Review the chosen
    model's licence, size and backend support before downloading.
@@ -79,7 +111,8 @@ run as root to work around a failure; review the specific directory first.
 
 Keep `--user=99:100` when editing Extra Parameters, recreating the container,
 updating or rolling back images. NVIDIA variants additionally require
-`--runtime=nvidia`. Numeric UID overrides do not create a home directory or
+`--runtime=nvidia`. The Vulkan variant additionally requires `--group-add=18`
+so that UID 99 can open the `/dev/dri` nodes owned by the `video` group. Numeric UID overrides do not create a home directory or
 guarantee access to image-owned cache/token paths. Native Pocket TTS downloads
 and inference passed; gated downloads, Python fallback installers and other
 HOME-dependent paths still require validation. NVIDIA access needed no extra

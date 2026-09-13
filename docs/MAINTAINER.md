@@ -35,8 +35,11 @@ does not establish runtime compatibility.
 - Versions: `v0.1.0` is the first beta release. `v1.0.0` is reserved for a
   validated stable integration. Integration versions do not describe the
   upstream audio.cpp version inside the container.
-- Upstream now builds a Vulkan image. A Vulkan branch needs its own integration
-  and hardware review before it is added.
+- Vulkan branch for AMD and Intel GPUs added on 2026-09-13 at the owner's
+  decision, before any hardware test. The first report comes from a volunteer
+  installation through the public listing. The branch says so in its
+  description and `Requires` text until a dated report exists. NVIDIA on
+  Vulkan is out of scope because the image has no NVIDIA driver.
 
 ## Scope and layout
 
@@ -45,7 +48,8 @@ It was prepared separately from the upstream audio.cpp source. No upstream
 checkout or history belongs here. Do not build an application image from this
 repository. Nothing here changes an existing personal installation.
 
-- `templates/audio-cpp.xml`: one app with CPU base and two CUDA branches.
+- `templates/audio-cpp.xml`: one app with CPU base, two CUDA branches and a
+  Vulkan branch.
 - `ca_profile.xml`: Community Apps repository metadata.
 - `assets/`: community integration icon and provenance/licensing notes.
 - `docs/CONFIGURATION.md`: detailed deployment and tuning notes.

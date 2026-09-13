@@ -11,7 +11,8 @@ this template does not select a model, bundle extra voices, or add custom
 application code.
 
 **Beta integration:** basic speech generation has been tested on CPU and NVIDIA
-GPU setups, but public-listing installation checks are still in progress.
+GPU setups, but public-listing installation checks are still in progress. The
+AMD / Intel Vulkan option has not been tested on hardware yet.
 See [tested hardware and known limitations](docs/RELEASE-REVIEW.md).
 
 ## What can I use it for?
@@ -40,14 +41,34 @@ Docker image and download model packages; review each model's licence before use
 | **CPU** | You do not have a compatible NVIDIA GPU, or want the simplest setup. Performance depends on your CPU and model. |
 | **NVIDIA / CUDA 12** | You have an NVIDIA GPU with a compatible driver and the Unraid NVIDIA Driver plugin installed. |
 | **NVIDIA / CUDA 13** | Your GPU and driver support the CUDA 13 image. Do not select it just because its version number is higher. |
+| **AMD / Intel — Vulkan** | You have an AMD or Intel GPU and its driver is loaded on Unraid. Not for NVIDIA GPUs. Untested so far: no hardware report exists yet. |
 
 An AMD or Intel **CPU** can use the CPU option if supported by the upstream image.
-AMD/Intel **GPU acceleration** is not offered by this template yet. NVIDIA
-acceleration needs enough free GPU memory for your chosen model; other containers
-sharing the GPU also consume that memory.
+GPU acceleration needs enough free GPU memory for your chosen model. Other
+containers sharing the GPU also consume that memory. Upstream calls CUDA its
+optimized path and Vulkan a portability backend, so some models can be slower
+or unsupported on Vulkan.
 
 For image tags, driver considerations and GPU selection details, see the
 [hardware reference](docs/CONFIGURATION.md#hardware-variants).
+
+### Check that the Vulkan option uses your GPU
+
+The Vulkan image includes a software fallback called `llvmpipe` that runs on
+the CPU. If the container cannot reach your GPU, speech still works but slowly.
+After installation, open the Unraid terminal and run:
+
+```sh
+docker exec audio-cpp /app/entrypoint.sh server --backend vulkan --list-devices
+```
+
+Look for a line that starts with `Vulkan:` and names your GPU, ending in
+`[gpu]`. If you only see `[cpu]` lines, `llvmpipe` or `No devices found`,
+the container cannot use the GPU. Make sure that `/dev/dri` exists on the host.
+The **Intel GPU TOP** or **Radeon TOP** plugin loads the driver. Make sure that
+the container keeps the supplied Extra Parameters. Please report the output in
+[GitHub Issues](https://github.com/lozenge0/audio-cpp-unraid/issues) either way,
+because this option is waiting for its first hardware report.
 
 ## Install on Unraid
 
@@ -57,8 +78,9 @@ and enough RAM (or GPU memory) for the model you intend to run.
 1. In Unraid's **Apps** tab, search for `audio-cpp` and select the entry maintained
    by `lozenge0`. If it is not visible, check the [listing status](docs/RELEASE-REVIEW.md);
    do not confuse a private test entry with the public app.
-2. Choose CPU, CUDA 12 or CUDA 13. **Do not switch hardware support by changing
-   only the image tag**—the NVIDIA options also need GPU runtime settings.
+2. Choose CPU, CUDA 12, CUDA 13 or Vulkan. **Do not switch hardware support by
+   changing only the image tag.** The GPU options also need runtime or device
+   settings.
 3. Review **WebUI / API port**. Keep host port `6969` if it is free; otherwise
    choose an unused host port. Leave the container port at `8080`.
 4. Review **Model storage**. The suggested folder is
@@ -67,6 +89,7 @@ and enough RAM (or GPU memory) for the model you intend to run.
    folder and keep the supplied permission settings.
 5. For NVIDIA, review **NVIDIA GPU selection**. The default `all` exposes all
    NVIDIA GPUs; use a specific GPU UUID if you want to limit access to one card.
+   For Vulkan, keep **GPU device** at `/dev/dri`.
 6. Apply the settings, wait for the image to download and the container to start,
    then open **WebUI** from its menu on Unraid's **Docker** tab.
 
@@ -148,6 +171,10 @@ in the Apps tab lists each change. If you installed before 2026-09-13:
   icon still shows, Unraid kept a cached copy at
   `/boot/config/plugins/dockerMan/images/audio-cpp-icon.png`. Delete that file
   and reload the Docker page.
+- An AMD / Intel Vulkan option was added for new installations. To move an
+  existing CPU installation to it, install the app again from the Apps tab
+  with the Vulkan option and the same model folder. Changing the image tag by
+  hand does not add the device and group settings.
 
 ## Need help?
 
