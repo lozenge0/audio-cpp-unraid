@@ -1,6 +1,6 @@
 # Security
 
-This integration is a draft, with no supported public release yet. Once released,
+This integration is beta, with no versioned stable release yet. Once released,
 maintenance will focus on the current integration template; it does not provide
 security maintenance for upstream images, dependencies, models or Unraid itself.
 

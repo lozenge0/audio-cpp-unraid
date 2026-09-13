@@ -16,7 +16,14 @@
   download/inference tests; no ownership-changing helper or `PUID`/`PGID` mapping.
 - Draft first release v0.1.0; stable integration v1.0.0 after validation.
 
-## Current progress — 2026-09-12
+## Current publication status
+
+The standalone GitHub repository and CI are live. The owner reports CA submission
+and auto-approval; catalog visibility and public installation remain unverified.
+The beta template requests AI and Tools categories. See RELEASE-REVIEW.md for the
+current evidence and remaining checks. No production migration has been performed.
+
+## Runtime progress recorded on 2026-09-12
 
 The local template now includes the successfully tested Docker user/group setting.
 Isolated CPU/CUDA 12/CUDA 13 downloads and browser/API inference passed; CPU/CUDA 13
@@ -61,21 +68,18 @@ because the earlier personal CUDA12 service works.
 
 ## Stage 3 — publication identity and beta
 
-GitHub owner and support destination are selected and local URLs updated. The
-owner approved MIT for integration files and CC0 for the icon. Verify URLs after
-the explicitly approved repository publication. The owner will review the draft
-on GitHub; follow PUBLISHING.md for clean history, CI and repository settings.
-Initial draft publication is not beta approval. Confirm app/container naming and
-category in CA's preview. Local SVG checks at 32/48/180 px on light/dark backgrounds
-passed; actual CA rendering remains pending. Publish a small beta only after the
-owner approves the exact files and test results.
+GitHub publication, support URLs, CI and MIT/CC0 terms are recorded. The owner
+reviewed the repository and subsequently submitted it to CA. Follow PUBLISHING.md
+for the repository setup record. Confirm app/container naming and category in
+the public listing. Local SVG checks at 32/48/180 px on light/dark backgrounds
+passed; actual CA rendering and full deployment acceptance remain pending.
 
 ## Stage 4 — Community Apps submission
 
-Run the portal's Validate and Scan against the public repository, fix findings,
-review metadata/branch previews and submit only with explicit approval. Acceptance
-is subject to CA review. Publish integration release notes, supported/tested
-combinations, maintenance/support boundaries and rollback guidance.
+The owner reports automatic approval. Confirm catalog visibility and review
+Validate/Scan results; rerun those checks after meaningful XML changes. Do not
+create a duplicate submission because the listing is not yet visible. Preserve
+tested-combination limits, maintenance/support boundaries and rollback guidance.
 
 ## Ongoing maintenance
 

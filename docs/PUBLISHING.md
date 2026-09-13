@@ -34,8 +34,9 @@ Approved initialization procedure:
    files. Verify the remote before pushing `main`. Do not force-push.
 
 The draft was published on September 13 (Europe/London); publication checks are
-recorded in RELEASE-REVIEW.md. Keep the README and template labelled draft during
-GitHub review. No integration release tag or CA submission is part of this push.
+recorded in RELEASE-REVIEW.md. The owner subsequently reported CA auto-approval.
+Keep the beta label and outstanding validation limits visible. No versioned
+integration release has been created; catalog visibility still needs confirmation.
 
 ## CI and repository settings
 
