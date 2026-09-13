@@ -8,7 +8,7 @@ EXPECTED = {
     '.github/dependabot.yml', '.github/workflows/validate.yml',
     '.gitignore', 'CHANGELOG.md', 'LICENSE', 'README.md',
     'CONTRIBUTING.md', 'SECURITY.md',
-    'assets/README.md', 'assets/icon.svg', 'ca_profile.xml',
+    'assets/README.md', 'assets/icon.svg', 'assets/icon.png', 'ca_profile.xml',
     'docs/CONFIGURATION.md', 'docs/MAINTAINER.md',
     'docs/CPU-RETEST-20260912.md', 'docs/FIRST-RUN-FINDINGS.md',
     'docs/PLAN.md', 'docs/PUBLISHING.md', 'docs/RECREATION-TEST.md', 'docs/RELEASE-REVIEW.md',
@@ -98,7 +98,8 @@ class PublicationTests(unittest.TestCase):
             r'\bgithub_pat_[A-Za-z0-9_]{30,}\b',
         )
         for name in sorted(EXPECTED):
-            if name.startswith('tests/'):
+            if name.startswith('tests/') or name == 'assets/icon.png':
+                # PNG structure/chunk allowlist is checked by test_template.
                 continue
             text = (ROOT / name).read_text()
             for pattern in patterns:

@@ -129,6 +129,32 @@ class TemplateTests(unittest.TestCase):
         self.assertTrue(profile.findtext("Profile"))
         self.assertEqual(profile.findtext("Icon"), self.root.findtext("Icon"))
 
+    def test_deployment_icon_is_256_pixel_png(self):
+        import struct
+        import zlib
+        data = (ROOT / "assets/icon.png").read_bytes()
+        self.assertEqual(data[:8], b"\x89PNG\r\n\x1a\n")
+        offset = 8
+        chunks = []
+        while offset < len(data):
+            size = struct.unpack(">I", data[offset:offset + 4])[0]
+            kind = data[offset + 4:offset + 8]
+            payload = data[offset + 8:offset + 8 + size]
+            crc = struct.unpack(">I", data[offset + 8 + size:offset + 12 + size])[0]
+            self.assertEqual(crc, zlib.crc32(kind + payload))
+            self.assertIn(kind, (b"IHDR", b"bKGD", b"IDAT", b"IEND"))
+            chunks.append(kind)
+            if kind == b"IHDR":
+                self.assertEqual(struct.unpack(">II", payload[:8]), (256, 256))
+            offset += 12 + size
+        self.assertEqual(offset, len(data))
+        self.assertEqual(chunks[0], b"IHDR")
+        self.assertIn(b"IDAT", chunks)
+        self.assertEqual(chunks[-1], b"IEND")
+        for tag, root in variants(self.root):
+            with self.subTest(variant=tag):
+                self.assertTrue(root.findtext("Icon").endswith("/assets/icon.png"))
+
     def test_icon_is_self_contained_svg(self):
         icon = ET.parse(ROOT / "assets/icon.svg").getroot()
         self.assertEqual(icon.tag, "{http://www.w3.org/2000/svg}svg")
@@ -171,7 +197,7 @@ class TemplateTests(unittest.TestCase):
         self.assertEqual(self.root.findtext("Support"), base + "/issues")
         self.assertEqual(self.root.findtext("TemplateURL"), raw + "templates/audio-cpp.xml")
         self.assertEqual(self.root.findtext("ReadMe"), raw + "README.md")
-        self.assertEqual(self.root.findtext("Icon"), raw + "assets/icon.svg")
+        self.assertEqual(self.root.findtext("Icon"), raw + "assets/icon.png")
         profile = ET.parse(ROOT / "ca_profile.xml").getroot()
         self.assertEqual(profile.findtext("WebPage"), base)
         for path in (ROOT / "templates/audio-cpp.xml", ROOT / "ca_profile.xml"):

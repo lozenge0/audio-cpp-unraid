@@ -104,6 +104,7 @@ LICENSE
 README.md
 SECURITY.md
 assets/README.md
+assets/icon.png
 assets/icon.svg
 ca_profile.xml
 docs/CONFIGURATION.md

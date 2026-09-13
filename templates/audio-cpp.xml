@@ -9,7 +9,7 @@
   <Beta>true</Beta>
   <Category>AI Tools:</Category>
   <WebUI>http://[IP]:[PORT:8080]/</WebUI>
-  <Icon>https://raw.githubusercontent.com/lozenge0/audio-cpp-unraid/main/assets/icon.svg</Icon>
+  <Icon>https://raw.githubusercontent.com/lozenge0/audio-cpp-unraid/main/assets/icon.png</Icon>
   <Project>https://github.com/0xShug0/audio.cpp</Project>
   <Support>https://github.com/lozenge0/audio-cpp-unraid/issues</Support>
   <TemplateURL>https://raw.githubusercontent.com/lozenge0/audio-cpp-unraid/main/templates/audio-cpp.xml</TemplateURL>
