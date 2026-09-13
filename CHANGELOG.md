@@ -2,6 +2,9 @@
 
 ## Unreleased — targeting v0.1.0
 
+- Changed the default host WebUI/API port to `6969` for CPU, CUDA 12 and CUDA 13
+  installations. Internal port `8080` and WebUI port resolution remain unchanged;
+  existing installations retain their configured host port.
 - Reworked the README around first-time use, hardware choice, installation and a
   first speech sample. Moved detailed configuration, validation context and
   maintainer notes into linked guides without changing container settings.

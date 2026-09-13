@@ -43,9 +43,11 @@ container name, unused host port and fresh storage directory**. The template's
 
 1. Choose the hardware variant. NVIDIA hosts need the NVIDIA Driver plugin,
    a compatible driver and registered NVIDIA container runtime beforehand.
-2. Choose a free **host** HTTP port. Suggested port: `8080`; container port stays
+2. Choose a free **host** HTTP port. Suggested port: `6969`; container port stays
    `8080`. The template uses bridge networking and binds the server to
-   `0.0.0.0` inside the container so Docker forwarding works.
+   `0.0.0.0` inside the container so Docker forwarding works. Existing installations
+   keep their configured host port. The WebUI placeholder `[PORT:8080]` refers to
+   the container port and resolves to the chosen host port; leave it unchanged.
 3. Choose persistent model storage. Suggested host directory:
    `/mnt/user/appdata/audio-cpp/models`, mounted at upstream's `/app/models`.
    For a fresh installation, let Unraid create a new dedicated directory. It

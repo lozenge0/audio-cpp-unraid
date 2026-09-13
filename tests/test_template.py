@@ -66,7 +66,7 @@ def validate_variant(tag, root):
         assert field.text == field.get("Default"), "Inconsistent initial defaults"
         assert field.get("Description"), "Missing setup guidance"
     port = keyed[("Port", "8080")]
-    assert port.get("Mode") == "tcp" and port.text == "8080"
+    assert port.get("Mode") == "tcp" and port.text == "6969"
     models = keyed[("Path", "/app/models")]
     assert models.get("Mode") == "rw"
     assert models.text == "/mnt/user/appdata/audio-cpp/models"
@@ -94,6 +94,19 @@ class TemplateTests(unittest.TestCase):
         for tag, root in resolved:
             with self.subTest(variant=tag):
                 validate_variant(tag, root)
+
+    def test_host_port_default_and_container_port_are_distinct(self):
+        for tag, root in variants(self.root):
+            with self.subTest(variant=tag):
+                port = root.find("Config[@Type='Port']")
+                self.assertEqual(port.get("Default"), "6969")
+                self.assertEqual(port.text, "6969")
+                self.assertEqual(port.get("Target"), "8080")
+                self.assertEqual(root.findtext("WebUI"), "http://[IP]:[PORT:8080]/")
+                args = shlex.split(root.findtext("PostArgs"))
+                self.assertEqual(args[args.index("--port") + 1], "8080")
+        self.assertIn("Keep host port `6969`", (ROOT / "README.md").read_text())
+        self.assertIn("Suggested port: `6969`", (ROOT / "docs/CONFIGURATION.md").read_text())
 
     def test_branch_labels_and_shared_fields(self):
         shared = [ET.tostring(field) for field in self.root.findall("Config")]

@@ -59,7 +59,7 @@ and enough RAM (or GPU memory) for the model you intend to run.
    do not confuse a private test entry with the public app.
 2. Choose CPU, CUDA 12 or CUDA 13. **Do not switch hardware support by changing
    only the image tag**—the NVIDIA options also need GPU runtime settings.
-3. Review **WebUI / API port**. Keep host port `8080` if it is free; otherwise
+3. Review **WebUI / API port**. Keep host port `6969` if it is free; otherwise
    choose an unused host port. Leave the container port at `8080`.
 4. Review **Model storage**. The suggested folder is
    `/mnt/user/appdata/audio-cpp/models`. It stores downloaded models so they can
@@ -72,7 +72,8 @@ and enough RAM (or GPU memory) for the model you intend to run.
 
 If you already run audio.cpp, use a **different container name, unused host port
 and separate model folder** for this installation. Do not overwrite your working
-setup.
+setup. The `6969` default applies to new installations; existing installations
+keep their configured host port.
 
 ## Make your first speech sample
 
