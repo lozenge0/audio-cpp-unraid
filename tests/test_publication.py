@@ -1,9 +1,22 @@
 """Local publication guardrails, not a secret scanner or publishing tool."""
 from pathlib import Path
 import re
+import subprocess
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def candidate_files():
+    """Tracked files plus untracked files Git would not ignore.
+
+    Ignored caches such as __pycache__ and .pytest_cache never appear, while a
+    stray untracked file still fails the inventory before it is committed.
+    """
+    output = subprocess.run(
+        ['git', 'ls-files', '--cached', '--others', '--exclude-standard', '-z'],
+        cwd=ROOT, check=True, capture_output=True, text=True).stdout
+    return {name for name in output.split('\0') if name}
 EXPECTED = {
     '.github/dependabot.yml', '.github/workflows/validate.yml',
     '.gitignore', 'CHANGELOG.md', 'LICENSE', 'README.md',
@@ -28,7 +41,7 @@ class PublicationTests(unittest.TestCase):
                         '## Make your first speech sample', '## Security'):
             self.assertIn(heading, readme)
         self.assertIn('no login or API authentication', readme)
-        self.assertIn('public-listing installation checks are still in progress', readme)
+        self.assertIn('(docs/RELEASE-REVIEW.md)', readme)
         self.assertIn('(docs/CONFIGURATION.md)', readme)
         self.assertIn('(docs/MAINTAINER.md)', readme)
         self.assertNotIn('--max-loaded-models', readme)
@@ -47,22 +60,11 @@ class PublicationTests(unittest.TestCase):
         self.assertIn('The icon is separately dedicated under CC0', readme)
 
     def test_exact_candidate_inventory(self):
-        actual = set()
-        for path in ROOT.rglob('*'):
-            rel = path.relative_to(ROOT)
-            self.assertFalse(path.is_symlink(), f'Unexpected symlink: {rel}')
-            if rel.parts[0] == '.git':
-                continue  # Only the standalone repository's root Git metadata.
-            if rel.as_posix() == 'tests/__pycache__' and path.is_dir():
-                continue
-            if len(rel.parts) == 3 and rel.parts[:2] == ('tests', '__pycache__'):
-                cache = re.fullmatch(r'(test_\w+)\.cpython-\d+\.pyc', rel.name)
-                self.assertTrue(path.is_file() and cache,
-                                f'Unexpected cache content: {rel}')
-                self.assertIn(f'tests/{cache.group(1)}.py', EXPECTED)
-                continue
-            if path.is_file():
-                actual.add(rel.as_posix())
+        actual = candidate_files()
+        for name in sorted(actual):
+            path = ROOT / name
+            self.assertFalse(path.is_symlink(), f'Unexpected symlink: {name}')
+            self.assertTrue(path.is_file(), f'Tracked file missing: {name}')
         self.assertEqual(actual, EXPECTED,
                          'Review unexpected files before expanding the publication list')
 

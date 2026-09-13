@@ -7,23 +7,19 @@ status tracker; detailed experiment reports remain in this docs directory.
 
 ## Validation and submission context
 
-**Status: beta integration, targeting v0.1.0; full deployment acceptance pending.**
-CPU, CUDA 12 and CUDA 13 have passed isolated Pocket TTS testing on one Unraid
-host. Native Docker `--user=99:100` resolved the initial model-folder permission
-failure. The [September 12 CPU retest](CPU-RETEST-20260912.md) passed short-text,
-streaming and restart checks using a fixed official image; the owner also confirmed
-playback. Controlled CUDA 13 recreation, image update and rollback passed within
-their documented scope. These are not full Community Apps release acceptance.
-See the [current release review](RELEASE-REVIEW.md) for completed checks,
-remaining gates and the exact proposed repository contents.
-The selected repository destination is `lozenge0/audio-cpp-unraid`, with GitHub
-Issues as the integration support destination. The owner reports completing the
-Community Apps submission and receiving automatic approval. Catalog visibility
-and installation through the public listing are not yet verified. Portal approval
-does not establish runtime compatibility. See the release review for current status.
+The current submission state, completed evidence and remaining gates live in
+[the release review](RELEASE-REVIEW.md). Do not repeat that status here.
 
-The template requests both **AI** and **Tools** categories. Catalog placement
-depends on CA processing the updated template; it has not yet been confirmed live.
+CPU, CUDA 12 and CUDA 13 passed isolated Pocket TTS testing on one
+Unraid host. Native Docker `--user=99:100` resolved the initial model-folder
+permission failure. The [September 12 CPU retest](CPU-RETEST-20260912.md) passed
+short-text, streaming and restart checks on a fixed official image. Controlled
+CUDA 13 recreation, image update and rollback passed within their documented
+scope. These are not full Community Apps release acceptance, and portal approval
+does not establish runtime compatibility.
+
+The repository is `lozenge0/audio-cpp-unraid`, with GitHub Issues for support.
+The template requests both **AI** and **Tools** categories.
 
 ## Scope and layout
 
@@ -63,16 +59,19 @@ Follow [the release review](RELEASE-REVIEW.md) and
 The GitHub Actions workflow runs these tests on pushes, pull requests
 and manual dispatch, with no custom secrets, image builds or server access.
 Dependabot proposes CI action updates for review, not container updates.
-The [first hosted run](https://github.com/lozenge0/audio-cpp-unraid/actions/runs/34725657862)
-passed all 25 checks. See [contribution guidance](../CONTRIBUTING.md) and
+See [contribution guidance](../CONTRIBUTING.md) and
 [security reporting](../SECURITY.md).
 
-The public repository and hosted CI are verified, and the owner reports CA
-auto-approval. Next verify catalog visibility and the public branch-selection/install
-flow, review tested images and complete or explicitly defer outstanding lifecycle
+Next verify catalog visibility and the public branch-selection/install flow,
+review tested images and complete or explicitly defer outstanding lifecycle
 checks. Rerun CA Validate/Scan after meaningful XML changes. Follow the
 [GitHub publishing checklist](PUBLISHING.md). Never publish the surrounding
 audio.cpp checkout. Portal approval is not full deployment acceptance.
+
+When a template change affects installed users, add a dated entry to the
+`Changes` field in `templates/audio-cpp.xml`. Community Apps shows that field
+as the app changelog. Docker Manager does not refresh installed templates, so
+the entry must say what an existing user needs to change by hand.
 
 ## Primary references
 
@@ -93,5 +92,4 @@ and tests, not upstream software, third-party dependencies or model weights.
 The icon is separately dedicated under CC0 1.0 Universal, to the extent the owner
 holds applicable rights; see [artwork provenance and terms](../assets/README.md).
 The owner approved these choices and subsequent GitHub draft publication on
-2026-09-12. The owner subsequently completed the CA submission and reported
-auto-approval. No versioned integration release has been created.
+2026-09-12.

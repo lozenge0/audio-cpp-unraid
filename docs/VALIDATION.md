@@ -171,8 +171,8 @@ the protocol below is not a claim that every clause has been completed.
 - All 16 maintainer structural tests passed, including regression checks for
   missing/changed identity and unsupported `PUID`/`PGID` variables across every
   resolved variant. Setup descriptions explicitly identify the effective user.
-- Independent subagent review found no blocking issues and independently passed
-  all 16 tests. It checked fresh versus existing storage, update/rollback identity
+- A separate review found no blocking issues and passed the structural tests.
+  It checked fresh versus existing storage, update/rollback identity
   preservation and limits of the recorded one-host runtime evidence. Its wording
   suggestion was applied to distinguish pending CA installation acceptance from
   the isolated download/inference tests already completed.
@@ -185,7 +185,7 @@ the protocol below is not a claim that every clause has been completed.
 - 12 maintainer structural tests passed, including three resolved variants and
   negative checks for partial branch fields, custom runtime wrappers and personal
   tuning. This models reviewed branch semantics; it does not execute CA itself.
-- Independent subagent review found no XML/profile defects. Documentation was
+- A separate review found no XML/profile defects. Documentation was
   corrected to separate HTTP health from Docker healthcheck status and to require
   a unique test name, port and storage directory.
 - Supplied SVG artwork and metadata are preserved (a final newline was added).

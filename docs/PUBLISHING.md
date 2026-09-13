@@ -33,10 +33,9 @@ Approved initialization procedure:
    do not overwrite an existing repository or auto-add competing licence/README
    files. Verify the remote before pushing `main`. Do not force-push.
 
-The draft was published on September 13 (Europe/London); publication checks are
-recorded in RELEASE-REVIEW.md. The owner subsequently reported CA auto-approval.
-Keep the beta label and outstanding validation limits visible. No versioned
-integration release has been created; catalog visibility still needs confirmation.
+The draft was published on September 13 (Europe/London). Publication checks and
+the current project status are recorded in [the release review](RELEASE-REVIEW.md).
+Keep the beta label and outstanding validation limits visible.
 
 ## CI and repository settings
 

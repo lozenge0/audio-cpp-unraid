@@ -18,10 +18,9 @@
 
 ## Current publication status
 
-The standalone GitHub repository and CI are live. The owner reports CA submission
-and auto-approval; catalog visibility and public installation remain unverified.
-The beta template requests AI and Tools categories. See RELEASE-REVIEW.md for the
-current evidence and remaining checks. No production migration has been performed.
+See the status section at the top of [the release review](RELEASE-REVIEW.md).
+That file is the single source for submission state, evidence and remaining
+checks. No production migration took place.
 
 ## Runtime progress recorded on 2026-09-12
 
@@ -76,8 +75,8 @@ passed; actual CA rendering and full deployment acceptance remain pending.
 
 ## Stage 4 — Community Apps submission
 
-The owner reports automatic approval. Confirm catalog visibility and review
-Validate/Scan results; rerun those checks after meaningful XML changes. Do not
+Confirm catalog visibility and review Validate/Scan results. Rerun those checks
+after meaningful XML changes. Do not
 create a duplicate submission because the listing is not yet visible. Preserve
 tested-combination limits, maintenance/support boundaries and rollback guidance.
 
