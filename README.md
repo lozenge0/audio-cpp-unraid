@@ -4,7 +4,7 @@ Community-maintained Unraid templates using **unmodified upstream audio.cpp
 Docker images** and the upstream WebUI. No fork, custom image, startup wrapper,
 bundled model, voice recording, or generated server configuration.
 
-**Status: GitHub review draft, targeting v0.1.0; full deployment acceptance pending.**
+**Status: beta integration, targeting v0.1.0; full deployment acceptance pending.**
 CPU, CUDA 12 and CUDA 13 have passed isolated Pocket TTS testing on one Unraid
 host. Native Docker `--user=99:100` resolved the initial model-folder permission
 failure. The [September 12 CPU retest](docs/CPU-RETEST-20260912.md) passed short-text,
@@ -14,10 +14,13 @@ their documented scope. These are not full Community Apps release acceptance.
 See the [current release review](docs/RELEASE-REVIEW.md) for completed checks,
 remaining gates and the exact proposed repository contents.
 The selected repository destination is `lozenge0/audio-cpp-unraid`, with GitHub
-Issues as the integration support destination. The owner approved publishing
-this draft for review, not a beta release or Community Apps submission.
-See the release review for publication and live-link verification status.
-Do not submit this draft to Community Apps yet.
+Issues as the integration support destination. The owner reports completing the
+Community Apps submission and receiving automatic approval. Catalog visibility
+and installation through the public listing are not yet verified. Portal approval
+does not establish runtime compatibility. See the release review for current status.
+
+The template requests both **AI** and **Tools** categories. Catalog placement
+depends on CA processing the updated template; it has not yet been confirmed live.
 
 ## Scope and layout
 
@@ -229,13 +232,12 @@ The [first hosted run](https://github.com/lozenge0/audio-cpp-unraid/actions/runs
 passed all 25 checks. See [contribution guidance](CONTRIBUTING.md) and
 [security reporting](SECURITY.md).
 
-First publish a clearly labelled GitHub draft for owner review, after independent
-file/artwork review and explicit creation/push approval. Use a clean standalone
-Git history and verify public links and hosted CI after publication. Only later,
-complete the CA branch-selection/install checks, review tested images, run CA
-Validate/Scan and obtain beta/submission approval. Follow the
+The public repository and hosted CI are verified, and the owner reports CA
+auto-approval. Next verify catalog visibility and the public branch-selection/install
+flow, review tested images and complete or explicitly defer outstanding lifecycle
+checks. Rerun CA Validate/Scan after meaningful XML changes. Follow the
 [GitHub publishing checklist](docs/PUBLISHING.md). Never publish the surrounding
-audio.cpp checkout. GitHub review availability is not CA release acceptance.
+audio.cpp checkout. Portal approval is not full deployment acceptance.
 
 ## Primary references
 
@@ -256,4 +258,5 @@ and tests, not upstream software, third-party dependencies or model weights.
 The icon is separately dedicated under CC0 1.0 Universal, to the extent the owner
 holds applicable rights; see [artwork provenance and terms](assets/README.md).
 The owner approved these choices and subsequent GitHub draft publication on
-2026-09-12. Beta release and Community Apps submission remain separate approvals.
+2026-09-12. The owner subsequently completed the CA submission and reported
+auto-approval. No versioned integration release has been created.

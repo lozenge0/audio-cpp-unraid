@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <CommunityApplications>
-  <Profile>audio.cpp for Unraid: community-maintained templates using unmodified upstream Docker images. This project maintains the Unraid integration, not audio.cpp itself, and is not an official upstream endorsement. Installation support belongs in this repository's issues. Draft: not yet submitted to Community Apps.</Profile>
+  <Profile>audio.cpp for Unraid: community-maintained templates using unmodified upstream Docker images. This project maintains the Unraid integration, not audio.cpp itself, and is not an official upstream endorsement. Installation support belongs in this repository's issues. Beta integration: see the README for tested hardware and remaining deployment checks.</Profile>
   <Icon>https://raw.githubusercontent.com/lozenge0/audio-cpp-unraid/main/assets/icon.svg</Icon>
   <WebPage>https://github.com/lozenge0/audio-cpp-unraid</WebPage>
 </CommunityApplications>

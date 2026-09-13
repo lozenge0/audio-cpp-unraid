@@ -2,6 +2,9 @@
 
 ## Unreleased — targeting v0.1.0
 
+- Added AI alongside Tools categorization for the base app and inherited CUDA
+  variants. Replaced pre-submission wording after owner-reported CA auto-approval;
+  beta status, catalog visibility uncertainty and remaining runtime checks retained.
 - Initial draft: one Community Apps template with CPU, CUDA 12 and CUDA 13 variants.
 - Direct moving upstream image references; no application builds or runtime wrappers.
 - Native model storage, network port and NVIDIA selection fields.

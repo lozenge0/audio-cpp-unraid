@@ -7,14 +7,14 @@
   <Shell>bash</Shell>
   <Privileged>false</Privileged>
   <Beta>true</Beta>
-  <Category>Tools:</Category>
+  <Category>AI Tools:</Category>
   <WebUI>http://[IP]:[PORT:8080]/</WebUI>
   <Icon>https://raw.githubusercontent.com/lozenge0/audio-cpp-unraid/main/assets/icon.svg</Icon>
   <Project>https://github.com/0xShug0/audio.cpp</Project>
   <Support>https://github.com/lozenge0/audio-cpp-unraid/issues</Support>
   <TemplateURL>https://raw.githubusercontent.com/lozenge0/audio-cpp-unraid/main/templates/audio-cpp.xml</TemplateURL>
   <ReadMe>https://raw.githubusercontent.com/lozenge0/audio-cpp-unraid/main/README.md</ReadMe>
-  <Overview>audio.cpp for Unraid: community-maintained installation templates using unmodified upstream Docker images and the native WebUI/audio API. Choose CPU, NVIDIA CUDA 12, or NVIDIA CUDA 13 when installing. No models or personal configuration are bundled. Images follow upstream rolling Docker builds, not exclusively numbered releases. DRAFT: isolated runtime and private installation tests passed on one host; public branch selection and full release acceptance remain pending. See the README for tested images and limitations. Not ready for public submission.</Overview>
+  <Overview>audio.cpp for Unraid: community-maintained installation templates using unmodified upstream Docker images and the native WebUI/audio API. Choose CPU, NVIDIA CUDA 12, or NVIDIA CUDA 13 when installing. No models or personal configuration are bundled. Images follow upstream rolling Docker builds, not exclusively numbered releases. BETA: isolated runtime and private installation tests passed on one host; public branch selection and full deployment acceptance remain pending. See the README for tested images and limitations.</Overview>
   <Requires>Trusted-network access only: this setup provides no authentication. Runs as UID 99/GID 100 using Docker --user; model storage must be writable by this identity. Model downloads require network access and adequate storage. CPU variant: no GPU runtime required. Review the README before installation.</Requires>
   <DefaultTagDescription>CPU — no GPU required; upstream rolling image</DefaultTagDescription>
   <ExtraParams>--user=99:100</ExtraParams>

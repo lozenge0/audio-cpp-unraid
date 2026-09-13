@@ -137,11 +137,20 @@ class TemplateTests(unittest.TestCase):
     def test_documented_release_gate(self):
         readme = (ROOT / "README.md").read_text()
         self.assertIn("lozenge0/audio-cpp-unraid", readme)
-        self.assertIn("GitHub review draft", readme)
+        self.assertIn("beta integration", readme)
         self.assertIn("full deployment acceptance pending", readme)
         self.assertTrue((ROOT / "docs/PLAN.md").is_file())
         self.assertTrue((ROOT / "docs/VALIDATION.md").is_file())
         self.assertIn("MIT License", (ROOT / "LICENSE").read_text())
+
+    def test_ai_category_and_honest_beta_status(self):
+        for tag, resolved in variants(self.root):
+            with self.subTest(variant=tag):
+                self.assertEqual(resolved.findtext("Category").split(), ["AI", "Tools:"])
+                self.assertEqual(resolved.findtext("Beta"), "true")
+                self.assertIn("full deployment acceptance remain pending", resolved.findtext("Overview"))
+                self.assertNotIn("Not ready for public submission", resolved.findtext("Overview"))
+        self.assertNotIn("not yet submitted", (ROOT / "ca_profile.xml").read_text())
 
     def test_selected_publication_destinations(self):
         base = "https://github.com/lozenge0/audio-cpp-unraid"

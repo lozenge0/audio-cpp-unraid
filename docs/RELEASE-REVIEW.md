@@ -1,9 +1,10 @@
-# Release review — GitHub review draft
+# Release review — beta integration
 
 Updated 2026-09-13 (Europe/London). Target: **audio.cpp for Unraid v0.1.0**.
-The public GitHub review draft is published; no beta release or CA submission is
-approved. This is the current tracker; dated test reports preserve what was known
-during each experiment.
+The public repository is published. The owner reports completing CA submission
+and receiving automatic approval; catalog visibility and public installation are
+not yet verified. No versioned integration release has been created. This is the
+current tracker; dated test reports preserve what was known during each experiment.
 
 ## Proposed repository
 
@@ -20,7 +21,7 @@ during each experiment.
 - Licence: owner approved root MIT for integration files and CC0 1.0 for the icon
   on 2026-09-12. The artwork dedication applies only to rights the owner holds;
   see [artwork terms](../assets/README.md). Subsequent GitHub draft publication is
-  approved; beta release and CA submission are not.
+  approved. The owner subsequently completed CA submission and reported auto-approval.
 
 ## Completed evidence
 
@@ -57,9 +58,10 @@ Before publishing any repository contents:
 - [x] Verify the initial public push, hosted CI and repository security settings
   listed in the publication record below.
 
-Before calling v0.1.0 a Community Apps beta ready for submission:
+Post-submission verification and remaining deployment gates:
 
-- [ ] Owner reviews files on GitHub and approves final beta contents/test results.
+- [x] Owner reviewed the GitHub files, completed submission and reported auto-approval.
+- [ ] Independently verify catalog visibility and the accepted template contents.
 - [ ] Validate documented optional JSON under UID 99:100, stable model IDs across
   restart and CLI precedence, or clearly defer that recipe.
 - [ ] Check the full single-container DockerMan update path and variant-switch
@@ -69,8 +71,8 @@ Before calling v0.1.0 a Community Apps beta ready for submission:
 - [x] Verify GitHub Issues and README/template/raw icon links after approved publication.
 - [ ] Validate public CA branch selection and installation fields using a supported
   preview/feed workflow; private pre-expanded entries cannot prove this.
-- [ ] Run CA Validate/Scan, resolve findings and obtain explicit submission approval.
-  Acceptance is the CA reviewers' decision.
+- [ ] Review portal Validate/Scan results and rerun after meaningful XML changes.
+  Owner-reported auto-approval does not prove every runtime acceptance check passed.
 - [ ] Recheck moving tags before release; update the tested-image record or disclose
   newer untested images. Do not label a moving tag permanently verified.
 
@@ -182,3 +184,18 @@ The owner subsequently approved the separate GitHub publication step above.
 The first commit and CI timestamps are September 12 in UTC (after midnight
 September 13 locally). Dated runtime evidence has not been rerun for publication.
 No Unraid operations were performed.
+
+## Category and submission status update
+
+After publication, the owner reported completing CA submission with automatic
+approval, but could not yet find the app in the catalog. The template now requests
+`AI Tools:`; both category identifiers are present in the public
+[CA category list](https://github.com/Squidly271/AppFeed/blob/master/categoryList.json).
+The base and both CUDA branches inherit these categories and retain `Beta=true`.
+Removed obsolete pre-submission wording without marking public installation,
+DockerMan lifecycle tests or other pending runtime checks complete. No container
+image, arguments, mounts, ports, user identity or GPU options were changed.
+
+The original 25 checks remain, with one additional category/beta regression check.
+Catalog processing time and the reason for delayed visibility have not been
+established. No duplicate submission or Unraid changes were made for this update.
