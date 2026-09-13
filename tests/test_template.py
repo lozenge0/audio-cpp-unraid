@@ -137,8 +137,8 @@ class TemplateTests(unittest.TestCase):
     def test_documented_release_gate(self):
         readme = (ROOT / "README.md").read_text()
         self.assertIn("lozenge0/audio-cpp-unraid", readme)
-        self.assertIn("beta integration", readme)
-        self.assertIn("full deployment acceptance pending", readme)
+        self.assertIn("Beta integration", readme)
+        self.assertIn("public-listing installation checks are still in progress", readme)
         self.assertTrue((ROOT / "docs/PLAN.md").is_file())
         self.assertTrue((ROOT / "docs/VALIDATION.md").is_file())
         self.assertIn("MIT License", (ROOT / "LICENSE").read_text())

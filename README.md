@@ -1,262 +1,162 @@
 # audio.cpp for Unraid
 
-Community-maintained Unraid templates using **unmodified upstream audio.cpp
-Docker images** and the upstream WebUI. No fork, custom image, startup wrapper,
-bundled model, voice recording, or generated server configuration.
+Run audio AI models on your own Unraid server, with a browser interface for
+trying them and an API for connecting your own applications.
 
-**Status: beta integration, targeting v0.1.0; full deployment acceptance pending.**
-CPU, CUDA 12 and CUDA 13 have passed isolated Pocket TTS testing on one Unraid
-host. Native Docker `--user=99:100` resolved the initial model-folder permission
-failure. The [September 12 CPU retest](docs/CPU-RETEST-20260912.md) passed short-text,
-streaming and restart checks using a fixed official image; the owner also confirmed
-playback. Controlled CUDA 13 recreation, image update and rollback passed within
-their documented scope. These are not full Community Apps release acceptance.
-See the [current release review](docs/RELEASE-REVIEW.md) for completed checks,
-remaining gates and the exact proposed repository contents.
-The selected repository destination is `lozenge0/audio-cpp-unraid`, with GitHub
-Issues as the integration support destination. The owner reports completing the
-Community Apps submission and receiving automatic approval. Catalog visibility
-and installation through the public listing are not yet verified. Portal approval
-does not establish runtime compatibility. See the release review for current status.
+This community app installs the **official, unmodified audio.cpp Docker image**
+and enables its built-in WebUI. You do not need to compile anything or write
+code to get started. A model is a downloadable AI package for a particular task,
+such as speech generation or transcription. Choose the models you want after installation;
+this template does not select a model, bundle extra voices, or add custom
+application code.
 
-The template requests both **AI** and **Tools** categories. Catalog placement
-depends on CA processing the updated template; it has not yet been confirmed live.
+**Beta integration:** basic speech generation has been tested on CPU and NVIDIA
+GPU setups, but public-listing installation checks are still in progress.
+See [tested hardware and known limitations](docs/RELEASE-REVIEW.md).
 
-## Scope and layout
+## What can I use it for?
 
-This is a standalone integration repository with its own clean Git history.
-It was prepared separately from the upstream audio.cpp source; no upstream
-checkout/history belongs here. Do not build an application image from this
-repository. Nothing here changes an existing personal installation.
+Depending on the model you choose, upstream audio.cpp can:
 
-- `templates/audio-cpp.xml`: one app with CPU base and two CUDA branches.
-- `ca_profile.xml`: Community Apps repository metadata.
-- `assets/`: supplied community integration icon and provenance/licensing notes.
-- `docs/PLAN.md`: implementation stages and approval boundaries.
-- `docs/VALIDATION.md`: acceptance checklist and evidence requirements.
-- `docs/RELEASE-REVIEW.md`: current release status and publication boundaries.
-- `tests/`: maintainer-only structural checks; never shipped into the container.
-- `.github/`: read-only CI checks and Dependabot updates for the CI actions only.
+- **Turn text into speech:** create narration, spoken messages or voiceovers.
+- **Transcribe recordings:** turn speech in an audio file into text.
+- **Work with existing audio:** use supported models for tasks such as voice
+  conversion or separating vocals from music.
+- **Generate music or sound effects:** experiment with models that support those tasks.
 
-The project is called **audio.cpp for Unraid**; the template/container name is
-`audio-cpp`. Integration versions (`v0.1.0`, eventually `v1.0.0`) do not represent
-the version of upstream audio.cpp running inside the container. This integration
-does not imply endorsement by the audio.cpp maintainers or Unraid.
+These are upstream capabilities, not a promise that every model works on every
+device. Our Unraid testing so far focuses on **Pocket TTS English GGUF Q8**.
+Check [upstream's supported models](https://github.com/0xShug0/audio.cpp#supported-models)
+for each model's features and requirements. Use recordings and voices you have
+permission to use.
 
-## Hardware variants
+The server runs the models locally. You still need internet access to pull the
+Docker image and download model packages; review each model's licence before use.
 
-| Selection | Direct upstream image | Required host support |
-| --- | --- | --- |
-| CPU (base) | `ghcr.io/0xshug0/audio.cpp:full-cpu` | Supported CPU; no GPU runtime |
-| NVIDIA / CUDA 12 | `ghcr.io/0xshug0/audio.cpp:full-cuda12` | Compatible NVIDIA GPU, driver and NVIDIA runtime |
-| NVIDIA / CUDA 13 | `ghcr.io/0xshug0/audio.cpp:full-cuda13` | CUDA 13-compatible GPU, driver and NVIDIA runtime |
+## Choose your hardware option
 
-None of these variants has passed full deployment acceptance yet. The native
-user/group override now included in the draft passed isolated downloads and
-browser/API inference with all three images on one Unraid 7.3.2 host; both CUDA
-variants used an RTX 3060 12 GB. See the exact digests and limitations in the
-[current validation summary](docs/VALIDATION.md). The older CPU image in the
-initial identity tests subsequently failed short text; use the fixed-image
-retest record when assessing CPU support.
-Earlier personal CUDA 12 testing is not a substitute for a fresh installation.
-CUDA 13 excludes pre-Turing architectures; CUDA version alone does not prove
-that a particular card, driver, image and model combination works.
-
-Vulkan and HIP/ROCm are not offered by this draft. Upstream's
-[reviewed Docker workflow](https://github.com/0xShug0/audio.cpp/blob/5bea9c726881f6a7ce3e9adf18c060b5a6a8eb8e/.github/workflows/docker.yml)
-now includes `full-vulkan`; the earlier statement that upstream only built the
-three images above is outdated. A Vulkan branch still needs its own device,
-permission and hardware validation. No Vulkan or HIP/ROCm support is claimed here,
-and no additional branch or startup compilation has been added.
-
-Community Apps expands branches into installation configurations. A branch can
-replace launch arguments, Docker parameters and the **entire** Config list.
-This is an install/reinstall selector, not a reactive hardware dropdown in
-Docker Edit. Do not switch CPU to CUDA by changing only the image tag.
-
-## Initial setup (proposed; acceptance pending)
-
-For testing alongside an existing installation, first choose a **different
-container name, unused host port and fresh storage directory**. The template's
-`audio-cpp` name could otherwise collide with an existing personal container.
-
-1. Choose the hardware variant. NVIDIA hosts need the NVIDIA Driver plugin,
-   a compatible driver and registered NVIDIA container runtime beforehand.
-2. Choose a free **host** HTTP port. Suggested port: `8080`; container port stays
-   `8080`. The template uses bridge networking and binds the server to
-   `0.0.0.0` inside the container so Docker forwarding works.
-3. Choose persistent model storage. Suggested host directory:
-   `/mnt/user/appdata/audio-cpp/models`, mounted at upstream's `/app/models`.
-   For a fresh installation, let Unraid create a new dedicated directory. It
-   must be writable by UID `99` / GID `100`; see the permissions guidance below.
-4. For NVIDIA, review **NVIDIA GPU selection**. `all` preserves the NVIDIA base
-   image's default visibility. Prefer a specific GPU UUID on multi-GPU systems;
-   find it with `nvidia-smi -L` on the host. Driver capabilities are
-   `compute,utility`. Exposing several GPUs is not distributed inference.
-5. Start the container and open WebUI. Select/download models through upstream's
-   own interface; no model or voice is forced by the template. Review the chosen
-   model's licence, size and backend support before downloading.
-6. Verify inference and persistence before enabling Unraid autostart or updates.
-
-### Storage permissions and process identity
-
-All variants set Docker **Extra Parameters** to include `--user=99:100`. This
-runs the unchanged upstream application as numeric user `99` and group `100`,
-matching the owner/group of new model directories created by DockerMan on the
-tested Unraid host (mode `0755`). It overrides the tested images' default
-`1000:1000` process identity; it does not modify the images or change file owners.
-The image does not implement `PUID`/`PGID`, so adding those variables will not
-configure permissions.
-
-Existing or shared storage may have different owners, modes or ACLs. Verify
-that UID `99` / GID `100` can traverse and write the selected model directory
-before reusing it. This setting does not migrate an existing installation's
-permissions. Do not recursively change shared appdata ownership/permissions or
-run as root to work around a failure; review the specific directory first.
-
-Keep `--user=99:100` when editing Extra Parameters, recreating the container,
-updating or rolling back images. NVIDIA variants additionally require
-`--runtime=nvidia`. Numeric UID overrides do not create a home directory or
-guarantee access to image-owned cache/token paths. Native Pocket TTS downloads
-and inference passed; gated downloads, Python fallback installers and other
-HOME-dependent paths still require validation. NVIDIA access needed no extra
-groups on the tested host, which does not establish compatibility for all hosts.
-
-Use `/app/models` in the WebUI. Downloading outside a persistent mount can lose
-data when the container is replaced. Downloaded files surviving a restart is
-separate from dynamic model registrations being restored. For stable API model
-IDs after restarts, use upstream's configuration mechanism. Browser-saved voices
-are not automatically server-side backups.
-
-## Optional advanced configuration
-
-Leave application tuning unspecified to inherit upstream defaults. Unraid's
-**Post Arguments** field contains the server command. Append only documented
-upstream options there; Docker **Extra Parameters** is for Docker options, not
-audio.cpp flags. Changes take effect after applying/recreating the container.
-
-| Upstream argument | Purpose |
+| Option | When to choose it |
 | --- | --- |
-| `--device N` | Backend index among devices visible inside the container |
-| `--threads N` | Inference CPU threads, not CPU pinning |
-| `--max-loaded-models N` | Limit resident models; upstream `0` disables limit |
-| `--idle-unload-ms N` | Idle unload timeout in milliseconds; `0` disables |
-| `--min-free-memory-mb N` | Estimated host/GPU free-memory margin; `0` disables |
-| `--busy-timeout-ms N` | Timeout waiting for a busy model; `0` disables |
+| **CPU** | You do not have a compatible NVIDIA GPU, or want the simplest setup. Performance depends on your CPU and model. |
+| **NVIDIA / CUDA 12** | You have an NVIDIA GPU with a compatible driver and the Unraid NVIDIA Driver plugin installed. |
+| **NVIDIA / CUDA 13** | Your GPU and driver support the CUDA 13 image. Do not select it just because its version number is higher. |
 
-The upstream build inspected defaults to device `0`, threads `1`, unlimited
-resident models, idle unloading and memory guard disabled, and a busy timeout
-of `300000` ms. Defaults can change with rolling images: check the image's
-`server --help` and upstream documentation. No personal tuning is baked in here.
+An AMD or Intel **CPU** can use the CPU option if supported by the upstream image.
+AMD/Intel **GPU acceleration** is not offered by this template yet. NVIDIA
+acceleration needs enough free GPU memory for your chosen model; other containers
+sharing the GPU also consume that memory.
 
-If only one GPU is exposed, it is normally device `0` inside the container even
-if its host index differs. The memory guard estimates a load's footprint; it is
-not a hard VRAM cap, reservation, or protection against another process allocating
-memory. CPU pinning and Docker host-RAM limits are separate Unraid/Docker controls.
+For image tags, driver considerations and GPU selection details, see the
+[hardware reference](docs/CONFIGURATION.md#hardware-variants).
 
-The following optional JSON recipe has not yet been integration-tested under
-UID 99:100 for stable model IDs, restart restoration and CLI precedence. It is
-advanced upstream guidance, not a validated setup path for this integration.
+## Install on Unraid
 
-For a config-driven deployment, add a read-only host-directory mapping to
-`/config`, create **your own** valid upstream `server.json` there, and add
-`--config /config/server.json` to Post Arguments. No file is generated or bundled
-by this project. CLI arguments override matching JSON settings; the branch's
-explicit host/port/backend/UI arguments still apply unless deliberately edited.
-The mounted configuration and voice files must be readable, and their parent
-directories traversable, by UID `99` / GID `100`.
-Use upstream documentation for model IDs, voices, lazy loading and request limits.
-An optional voice directory requires a persistent mount and upstream JSON
-`voice_dir` configuration or the `--voice-dir` argument; no personal voice data
-is included here.
+Before starting, have space for both the Docker image and downloaded models,
+and enough RAM (or GPU memory) for the model you intend to run.
 
-Do not create invented `AUDIOCPP_THREADS` or similar environment variables:
-upstream does not map them to these arguments. Do not insert `$VARIABLE` into
-ordinary Post Arguments expecting container environment expansion. Separate
-friendly tuning inputs would require upstream support; this project does not
-add a shell wrapper to implement them.
+1. In Unraid's **Apps** tab, search for `audio-cpp` and select the entry maintained
+   by `lozenge0`. If it is not visible, check the [listing status](docs/RELEASE-REVIEW.md);
+   do not confuse a private test entry with the public app.
+2. Choose CPU, CUDA 12 or CUDA 13. **Do not switch hardware support by changing
+   only the image tag**—the NVIDIA options also need GPU runtime settings.
+3. Review **WebUI / API port**. Keep host port `8080` if it is free; otherwise
+   choose an unused host port. Leave the container port at `8080`.
+4. Review **Model storage**. The suggested folder is
+   `/mnt/user/appdata/audio-cpp/models`. It stores downloaded models so they can
+   survive container replacement. For a first installation, use a new dedicated
+   folder and keep the supplied permission settings.
+5. For NVIDIA, review **NVIDIA GPU selection**. The default `all` exposes all
+   NVIDIA GPUs; use a specific GPU UUID if you want to limit access to one card.
+6. Apply the settings, wait for the image to download and the container to start,
+   then open **WebUI** from its menu on Unraid's **Docker** tab.
+
+If you already run audio.cpp, use a **different container name, unused host port
+and separate model folder** for this installation. Do not overwrite your working
+setup.
+
+## Make your first speech sample
+
+The WebUI includes model downloads and a **Studio** for trying models. Names and
+layout can change as upstream releases new images.
+
+1. Open the model catalog/download area and choose a text-to-speech model.
+   **Pocket TTS English GGUF Q8** is an example we have tested, not a required
+   default. “GGUF Q8” identifies the model package/precision.
+2. Download it into the mounted models location, `/app/models`, and wait for
+   installation to finish.
+3. In **Studio**, choose text-to-speech, select the installed model and a voice
+   it offers, then generate a short sentence such as:
+   “Hello, this is my first audio.cpp test.”
+4. Play the result. The first request may take longer while the model loads.
+   Try a longer sentence once that works.
+
+No model is preselected by this integration. Different models offer different
+voices, languages and controls. A retained download does not necessarily mean
+the model is automatically registered after a restart; you may need to select
+it again. Stable API model IDs need [advanced configuration](docs/CONFIGURATION.md#optional-advanced-configuration).
+
+## Use it from another application
+
+You can also use audio.cpp as an audio-processing service for your own scripts
+or apps—for example, to generate spoken notifications or transcribe recordings.
+Those integrations are yours to configure; this template does not add them.
+
+Use your Unraid server's address and the **host port** you selected. The server
+provides `/health` for a server-health check and `/v1/models` to list registered
+model IDs. A healthy server does not prove a model is loaded or ready to generate.
+Use the registered IDs, not guessed model names, when making requests.
+
+See the [official API guide](https://github.com/0xShug0/audio.cpp/blob/main/app/server/README.md)
+for speech generation, transcription and other endpoints. Some endpoints use
+OpenAI-style formats; that does not guarantee compatibility with every client.
 
 ## Security
 
-This setup provides **no authentication**. The WebUI's management endpoints can
-download/delete models and use storage accessible to the container. Keep the
-published port on trusted networks; do not port-forward it to the internet.
-For access beyond trusted networks, arrange authenticated access separately.
-CORS is not authentication; no permissive CORS override is added here.
+**There is no login or API authentication in this setup.** Anyone who can reach
+the port may be able to run jobs and manage models. Keep it on a trusted network;
+do not expose the port directly to the internet. Remote access needs separate,
+authenticated protection. See [security guidance](SECURITY.md).
 
-The template does not request privileged mode, mount the Docker socket, expose
-host system directories, install drivers, or change the host Docker daemon.
-Mount only the data needed. GPU runtime access is limited to the chosen variant.
+## Storage and updates
 
-## Updates, persistence and rollback
+Keep your model folder and any configuration backed up. The template runs as
+`99:100`, the numeric user/group used for new model folders on the tested Unraid
+host. Leave that setting in place; do not add `PUID`/`PGID` variables or broadly
+change appdata permissions to fix an error.
 
-The template references moving upstream tags, **not pinned digests**. Upstream
-currently publishes rolling Docker builds when new commits are available; these
-are not exclusively numbered releases. With a user-enabled Unraid container
-updater, the user's chosen tag is checked/pulled on their schedule and the
-container is recreated. We run no image-building or image-mirroring pipeline.
+Container updates come directly from upstream's rolling images, not only numbered
+releases. This template does not enable automatic updates for you. Test your
+setup before enabling them and retain a known-good image reference for rollback.
+An image update does not update your models or GPU driver.
 
-Updates remain on the selected CPU/CUDA tag; they do not switch backend, upgrade
-host drivers, update model weights, or safely migrate every installation setting.
-Template changes are not a universal migration mechanism for installed containers.
-An existing installation is not automatically migrated to UID `99` / GID `100`
-by this template change. Review its current identity and storage before adopting
-the setting; preserve the matching identity throughout an image update/rollback.
-Moving tags can include regressions or changed driver requirements. Users choose
-whether to enable automatic updates; the template does not enable them for users.
+See [permissions](docs/CONFIGURATION.md#storage-permissions-and-process-identity)
+and [updates/rollback](docs/CONFIGURATION.md#updates-persistence-and-rollback)
+for the details.
 
-Before enabling unattended updates, retain the working image digest/reference,
-container settings and a backup of persistent data. Test replacing the container
-and reusing model storage. For rollback, disable updates, restore the known-good
-image reference (and compatible backed-up configuration/data if necessary), then
-recreate only this container. Rolling back an image cannot undo model/data changes.
-An upstream dated tag or digest can be used to opt out of rolling image updates.
+## Need help?
 
-## Maintainer checks and publishing
+- **WebUI will not open:** check that the container is running, its logs, and the
+  host port you selected.
+- **A download fails:** check free space and model-folder permissions.
+- **Generation fails or says “Failed to fetch”:** check container logs and whether
+  it stopped; the message alone does not identify the cause. Note the model and
+  image version when reporting it.
+- **Installation/template questions:** open an issue in
+  [lozenge0/audio-cpp-unraid](https://github.com/lozenge0/audio-cpp-unraid/issues).
+  Remove credentials, private paths and personal text/audio from reports.
 
-Run from this directory, with Python 3.9+:
+## Further reading
 
-```sh
-python3 -m unittest discover -s tests -v
-```
+- [Configuration reference](docs/CONFIGURATION.md): image variants, permissions,
+  tuning, optional JSON and rollback.
+- [Tested images and remaining checks](docs/RELEASE-REVIEW.md): what we have and
+  have not verified.
+- [Maintainer guide](docs/MAINTAINER.md): project scope, CI, release process and
+  links to detailed test reports.
+- [Upstream audio.cpp](https://github.com/0xShug0/audio.cpp): model capabilities,
+  software documentation and development.
 
-These checks validate local structural/design invariants, not the CA parser,
-live registry availability, hardware, browser workflows, or installation success.
-Follow [the release review](docs/RELEASE-REVIEW.md) and
-[full acceptance checklist](docs/VALIDATION.md) before any release.
-
-The GitHub Actions workflow runs these tests on pushes, pull requests
-and manual dispatch, with no custom secrets, image builds or server access.
-Dependabot proposes CI action updates for review, not container updates.
-The [first hosted run](https://github.com/lozenge0/audio-cpp-unraid/actions/runs/34725657862)
-passed all 25 checks. See [contribution guidance](CONTRIBUTING.md) and
-[security reporting](SECURITY.md).
-
-The public repository and hosted CI are verified, and the owner reports CA
-auto-approval. Next verify catalog visibility and the public branch-selection/install
-flow, review tested images and complete or explicitly defer outstanding lifecycle
-checks. Rerun CA Validate/Scan after meaningful XML changes. Follow the
-[GitHub publishing checklist](docs/PUBLISHING.md). Never publish the surrounding
-audio.cpp checkout. Portal approval is not full deployment acceptance.
-
-## Primary references
-
-- [Upstream Docker guide](https://github.com/0xShug0/audio.cpp/blob/main/docs/docker.md)
-- [Upstream Docker publishing workflow](https://github.com/0xShug0/audio.cpp/blob/main/.github/workflows/docker.yml)
-- [Upstream server guide](https://github.com/0xShug0/audio.cpp/blob/main/app/server/README.md)
-- [CA starter repository](https://github.com/unraid/unraid-community-apps-starter)
-- [CA submission requirements](https://ca.unraid.net/submit/help)
-- [CA XML fields](https://ca.unraid.net/submit/help/xml-field-reference)
-- [Unraid container settings](https://docs.unraid.net/unraid-os/using-unraid-to/run-docker-containers/managing-and-customizing-containers/)
-- [NVIDIA container GPU selection](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/docker-specialized.html)
-- [CUDA 13 compatibility changes](https://docs.nvidia.com/cuda/archive/13.0.0/cuda-toolkit-release-notes/index.html)
-
-## Licensing
-
-The [MIT licence](LICENSE) applies to this integration's templates, documentation
-and tests, not upstream software, third-party dependencies or model weights.
-The icon is separately dedicated under CC0 1.0 Universal, to the extent the owner
-holds applicable rights; see [artwork provenance and terms](assets/README.md).
-The owner approved these choices and subsequent GitHub draft publication on
-2026-09-12. The owner subsequently completed the CA submission and reported
-auto-approval. No versioned integration release has been created.
+The integration is community-maintained, not an official endorsement by audio.cpp
+or Unraid. Its files use the [MIT licence](LICENSE), not the licences of upstream
+software or model weights. The icon is separately dedicated under CC0 1.0 to the
+extent the owner holds applicable rights; see [artwork terms](assets/README.md).

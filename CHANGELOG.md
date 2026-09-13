@@ -2,6 +2,9 @@
 
 ## Unreleased — targeting v0.1.0
 
+- Reworked the README around first-time use, hardware choice, installation and a
+  first speech sample. Moved detailed configuration, validation context and
+  maintainer notes into linked guides without changing container settings.
 - Added AI alongside Tools categorization for the base app and inherited CUDA
   variants. Replaced pre-submission wording after owner-reported CA auto-approval;
   beta status, catalog visibility uncertainty and remaining runtime checks retained.

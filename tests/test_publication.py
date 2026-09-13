@@ -9,6 +9,7 @@ EXPECTED = {
     '.gitignore', 'CHANGELOG.md', 'LICENSE', 'README.md',
     'CONTRIBUTING.md', 'SECURITY.md',
     'assets/README.md', 'assets/icon.svg', 'ca_profile.xml',
+    'docs/CONFIGURATION.md', 'docs/MAINTAINER.md',
     'docs/CPU-RETEST-20260912.md', 'docs/FIRST-RUN-FINDINGS.md',
     'docs/PLAN.md', 'docs/PUBLISHING.md', 'docs/RECREATION-TEST.md', 'docs/RELEASE-REVIEW.md',
     'docs/SHORT-TEXT-INVESTIGATION.md', 'docs/UI-TEST-PREFLIGHT.md',
@@ -19,6 +20,22 @@ EXPECTED = {
 
 
 class PublicationTests(unittest.TestCase):
+    def test_first_time_guide_keeps_safety_and_routes_advanced_notes(self):
+        readme = (ROOT / 'README.md').read_text()
+        config = (ROOT / 'docs/CONFIGURATION.md').read_text()
+        maintainer = (ROOT / 'docs/MAINTAINER.md').read_text()
+        for heading in ('## What can I use it for?', '## Install on Unraid',
+                        '## Make your first speech sample', '## Security'):
+            self.assertIn(heading, readme)
+        self.assertIn('no login or API authentication', readme)
+        self.assertIn('public-listing installation checks are still in progress', readme)
+        self.assertIn('(docs/CONFIGURATION.md)', readme)
+        self.assertIn('(docs/MAINTAINER.md)', readme)
+        self.assertNotIn('--max-loaded-models', readme)
+        self.assertIn('--max-loaded-models', config)
+        self.assertIn('not yet been integration-tested', config)
+        self.assertIn('Run from the repository root', maintainer)
+
     def test_approved_licence_scopes(self):
         licence = (ROOT / 'LICENSE').read_text()
         artwork = (ROOT / 'assets/README.md').read_text()

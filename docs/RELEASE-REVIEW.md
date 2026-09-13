@@ -106,8 +106,10 @@ SECURITY.md
 assets/README.md
 assets/icon.svg
 ca_profile.xml
+docs/CONFIGURATION.md
 docs/CPU-RETEST-20260912.md
 docs/FIRST-RUN-FINDINGS.md
+docs/MAINTAINER.md
 docs/PLAN.md
 docs/PUBLISHING.md
 docs/RECREATION-TEST.md
@@ -146,7 +148,7 @@ review publication from CA release. The inventory guard now checks symlinks befo
 exclusions and permits only root Git metadata and recognized test bytecode caches.
 
 Preparation adds read-only, commit-pinned CI, Dependabot action updates and
-contribution/security/publishing guidance. The exact inventory is now 26 files;
+contribution/security/publishing guidance. The initial publication inventory contained 26 files;
 the suite includes 16 template, five publication and four CI policy checks.
 These CI checks inspect policy text, not the complete GitHub workflow schema.
 Final local verification: all **25 tests passed**, both YAML files parsed locally,
@@ -199,3 +201,14 @@ image, arguments, mounts, ports, user identity or GPU options were changed.
 The original 25 checks remain, with one additional category/beta regression check.
 Catalog processing time and the reason for delayed visibility have not been
 established. No duplicate submission or Unraid changes were made for this update.
+
+## First-time user documentation
+
+The README now leads with what the app does, hardware choice, installation, a
+first Pocket TTS example and ways to connect applications. Broad model capabilities
+are attributed to upstream; the tested Unraid scope remains clearly limited.
+Detailed notes were moved, not discarded: [configuration](CONFIGURATION.md) holds
+image/permission/tuning/update guidance, and [maintainer notes](MAINTAINER.md) hold
+project scope, validation context, CI, release process and source references.
+The current publication inventory contains 28 files. No template runtime values
+or container settings changed in this documentation reorganization.
