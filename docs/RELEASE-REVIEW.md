@@ -10,8 +10,13 @@ here instead of repeating it.
 - The owner completed the Community Apps submission and reported automatic
   approval. Catalog visibility and installation through the public listing are
   not yet verified.
+- The app is visible in the public catalog: the Community Apps feed built on
+  2026-09-13 lists `audio-cpp` with both CUDA branches expanded.
 - No versioned integration release or tag exists.
 - Beta status applies to every variant. Runtime evidence covers one host.
+- The AMD / Intel Vulkan branch was published on 2026-09-13 without a hardware
+  test, at the owner's decision. A volunteer tester with an AMD or Intel GPU
+  installs it from the public listing and reports whether the GPU is used.
 
 Dated test reports in this folder preserve what was known during each experiment.
 
@@ -24,8 +29,9 @@ Dated test reports in this folder preserve what was known during each experiment
   preset model/configuration, personal voice or image-publishing workflow.
 - Updates: users follow official moving tags. Passing tests against pinned
   digests does not validate every future image published to those tags.
-- Scope: CPU, CUDA 12 and CUDA 13. Runtime evidence is one Unraid 7.3.2 host,
-  Ryzen 7 3700X / RTX 3060 12 GB, using Pocket TTS GGUF Q8.
+- Scope: CPU, CUDA 12, CUDA 13 and Vulkan (AMD/Intel). Runtime evidence is one
+  Unraid 7.3.2 host, Ryzen 7 3700X / RTX 3060 12 GB, using Pocket TTS GGUF Q8.
+  The Vulkan variant has no runtime evidence yet.
 - Categories: the template requests `AI` and `Tools:`. Both identifiers are in
   the public [CA category list](https://github.com/Squidly271/AppFeed/blob/master/categoryList.json).
 - Licence: owner approved root MIT for integration files and CC0 1.0 for the icon
@@ -36,7 +42,7 @@ Dated test reports in this folder preserve what was known during each experiment
 
 | Area | Supported conclusion | Evidence |
 | --- | --- | --- |
-| Template | Three complete configurations. Upstream-only launch and native identity controls | `tests/test_template.py` |
+| Template | Four complete configurations. Upstream-only launch and native identity controls | `tests/test_template.py` |
 | Fresh storage | Native downloads work as 99:100 without ownership-changing helpers | [Identity tests](reports/USER-IDENTITY-TESTS.md) |
 | Private CA install | Owner installed pre-expanded CPU/CUDA 12/CUDA 13 entries, not the public selector | [UI evidence](VALIDATION.md) |
 | CPU regression | Fixed revision `5bea9c7` passes short/long offline, Studio, streaming and restart tests. Owner playback confirmed | [CPU retest](reports/CPU-RETEST-20260912.md) |
@@ -80,16 +86,20 @@ Still open:
   Owner-reported auto-approval does not prove every runtime acceptance check passed.
 - [ ] Recheck moving tags before release. Update the tested-image record or disclose
   newer untested images. Do not label a moving tag permanently verified.
-- [ ] Tag `v0.1.0` once the app is visible in the public catalog.
+- [ ] Record the first Vulkan hardware report under `docs/reports/` (GPU model,
+  Unraid version, `--list-devices` output, `/health`, generation result). Then
+  remove the "not yet hardware-tested" wording from the branch, or narrow the
+  claim if the test fails.
+- [ ] Tag `v0.1.0` once the remaining gates are complete or explicitly deferred.
 
 Failure/retry recovery, optional residency/resource controls, other models, GPUs
 and Unraid versions are not covered exhaustively. Test or narrow relevant claims.
 Do not mark the entire acceptance protocol complete from one model installation.
 
-Vulkan is a future scope decision, not an upstream-image availability blocker.
-The [reviewed upstream workflow](https://github.com/0xShug0/audio.cpp/blob/5bea9c726881f6a7ce3e9adf18c060b5a6a8eb8e/.github/workflows/docker.yml)
-includes it. No Vulkan branch, AMD/Intel compatibility claim or new deployment is
-authorized here. CPU/CUDA can remain the first release scope.
+The Vulkan branch relies on two facts checked from sources, not on a server.
+Unraid's `/dev/dri` nodes belong to group `video` (GID 18) unless the ich777
+GPU plugins open them. The upstream image's Mesa drivers cover AMD and Intel
+but not NVIDIA. See the [Vulkan notes](CONFIGURATION.md#vulkan-variant).
 
 The sequence follows [CA submission guidance](https://ca.unraid.net/submit/help):
 public active repository, OSI-approved root licence, profile/template metadata,

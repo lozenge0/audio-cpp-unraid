@@ -19,8 +19,9 @@
 - Use a PNG icon so the Unraid Docker page shows the app icon.
 - New installations default to host port 6969. Existing installations keep their configured port.
 - First beta listing with CPU, NVIDIA CUDA 12 and NVIDIA CUDA 13 variants.
+- New AMD / Intel Vulkan option for new installations. It has not been tested on hardware yet; please report results in GitHub Issues.
   </Changes>
-  <Overview>audio.cpp for Unraid: community-maintained installation templates using unmodified upstream Docker images and the native WebUI/audio API. Choose CPU, NVIDIA CUDA 12, or NVIDIA CUDA 13 when installing. No models or personal configuration are bundled. Images follow upstream rolling Docker builds, not exclusively numbered releases. BETA: isolated runtime and private installation tests passed on one host; public branch selection and full deployment acceptance remain pending. See the README for tested images and limitations.</Overview>
+  <Overview>audio.cpp for Unraid: community-maintained installation templates using unmodified upstream Docker images and the native WebUI/audio API. Choose CPU, NVIDIA CUDA 12, NVIDIA CUDA 13, or AMD/Intel Vulkan (not yet hardware-tested) when installing. No models or personal configuration are bundled. Images follow upstream rolling Docker builds, not exclusively numbered releases. BETA: isolated runtime and private installation tests passed on one host; public branch selection and full deployment acceptance remain pending. See the README for tested images and limitations.</Overview>
   <Requires>Trusted-network access only: this setup provides no authentication. Runs as UID 99/GID 100 using Docker --user; model storage must be writable by this identity. Model downloads require network access and adequate storage. CPU variant: no GPU runtime required. Review the README before installation.</Requires>
   <DefaultTagDescription>CPU — no GPU required; upstream rolling image</DefaultTagDescription>
   <ExtraParams>--user=99:100</ExtraParams>
@@ -51,5 +52,16 @@
     <Config Name="Model storage" Target="/app/models" Default="/mnt/user/appdata/audio-cpp/models" Mode="rw" Description="Persistent model packages downloaded through the upstream WebUI. Must be writable by UID 99/GID 100, set through Docker --user in Extra Parameters. Existing folders may need a permissions review; PUID/PGID are not supported. No models are preselected or bundled." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/audio-cpp/models</Config>
     <Config Name="NVIDIA GPU selection" Target="NVIDIA_VISIBLE_DEVICES" Default="all" Mode="" Description="Upstream default all exposes every NVIDIA GPU. On multi-GPU systems, select one GPU UUID from nvidia-smi -L. Exposing several GPUs does not enable distributed inference. Container device numbering may differ from the host." Type="Variable" Display="always" Required="true" Mask="false">all</Config>
     <Config Name="NVIDIA driver capabilities" Target="NVIDIA_DRIVER_CAPABILITIES" Default="compute,utility" Mode="" Description="CUDA compute and NVIDIA monitoring. Keep compute,utility for this CUDA variant." Type="Variable" Display="advanced" Required="true" Mask="false">compute,utility</Config>
+  </Branch>
+  <Branch>
+    <Tag>full-vulkan</Tag>
+    <TagDescription>AMD / Intel — Vulkan; upstream rolling image; not yet hardware-tested</TagDescription>
+    <Repository>ghcr.io/0xshug0/audio.cpp:full-vulkan</Repository>
+    <Requires>AMD or Intel GPU whose kernel driver is loaded and exposed at /dev/dri (the Intel GPU TOP or Radeon TOP plugin loads it). Not for NVIDIA GPUs: choose a CUDA variant. No hardware test has been recorded for this variant yet; please report results in GitHub Issues. Trusted-network access only: no authentication. Runs as UID 99/GID 100 using Docker --user plus the Unraid video group (18) for /dev/dri access; model storage must be writable by this identity. See README.</Requires>
+    <ExtraParams>--user=99:100 --group-add=18</ExtraParams>
+    <PostArgs>server --ui --ui-management --host 0.0.0.0 --port 8080 --backend vulkan</PostArgs>
+    <Config Name="WebUI / API port" Target="8080" Default="6969" Mode="tcp" Description="Host HTTP port. Change this if another container uses it; leave the container port at 8080. No authentication is provided." Type="Port" Display="always" Required="true" Mask="false">6969</Config>
+    <Config Name="Model storage" Target="/app/models" Default="/mnt/user/appdata/audio-cpp/models" Mode="rw" Description="Persistent model packages downloaded through the upstream WebUI. Must be writable by UID 99/GID 100, set through Docker --user in Extra Parameters. Existing folders may need a permissions review; PUID/PGID are not supported. No models are preselected or bundled." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/audio-cpp/models</Config>
+    <Config Name="GPU device" Target="/dev/dri" Default="/dev/dri" Mode="" Description="Host DRM device directory for AMD and Intel GPUs. Keep /dev/dri unless you know which single render node to pass. The image's Mesa drivers include a CPU software fallback (llvmpipe), so confirm the GPU is in use as described in the README." Type="Device" Display="always" Required="true" Mask="false">/dev/dri</Config>
   </Branch>
 </Container>

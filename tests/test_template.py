@@ -15,7 +15,15 @@ import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
 IMAGE = "ghcr.io/0xshug0/audio.cpp:"
-TAGS = ("full-cpu", "full-cuda12", "full-cuda13")
+TAGS = ("full-cpu", "full-cuda12", "full-cuda13", "full-vulkan")
+BACKENDS = {"full-cpu": "cpu", "full-cuda12": "cuda", "full-cuda13": "cuda",
+            "full-vulkan": "vulkan"}
+# Every variant runs as 99:100. NVIDIA needs the runtime; Vulkan needs the
+# Unraid `video` group (GID 18 in Slackware), which owns /dev/dri by default.
+EXTRA_PARAMS = {"full-cpu": "--user=99:100",
+                "full-cuda12": "--user=99:100 --runtime=nvidia",
+                "full-cuda13": "--user=99:100 --runtime=nvidia",
+                "full-vulkan": "--user=99:100 --group-add=18"}
 LAUNCH = "server --ui --ui-management --host 0.0.0.0 --port 8080 --backend "
 
 
@@ -43,23 +51,24 @@ def validate_variant(tag, root):
     assert root.findtext("Network") == "bridge"
     assert root.findtext("Privileged") == "false"
     assert root.findtext("WebUI") == "http://[IP]:[PORT:8080]/"
-    gpu = tag != "full-cpu"
-    expected_backend = "cuda" if gpu else "cpu"
+    nvidia = BACKENDS[tag] == "cuda"
+    vulkan = BACKENDS[tag] == "vulkan"
     assert shlex.split(root.findtext("PostArgs", "")) == shlex.split(
-        LAUNCH + expected_backend
+        LAUNCH + BACKENDS[tag]
     ), "Unexpected application tuning or startup code"
-    assert root.findtext("ExtraParams", "") == (
-        "--user=99:100 --runtime=nvidia" if gpu else "--user=99:100"
-    ), "Unexpected Docker runtime options"
+    assert root.findtext("ExtraParams", "") == EXTRA_PARAMS[tag], (
+        "Unexpected Docker runtime options")
     configs = root.findall("Config")
     keyed = {(field.get("Type"), field.get("Target")): field for field in configs}
     assert len(keyed) == len(configs), "Duplicate configuration target"
     expected = {("Port", "8080"), ("Path", "/app/models")}
-    if gpu:
+    if nvidia:
         expected |= {
             ("Variable", "NVIDIA_VISIBLE_DEVICES"),
             ("Variable", "NVIDIA_DRIVER_CAPABILITIES"),
         }
+    if vulkan:
+        expected |= {("Device", "/dev/dri")}
     assert set(keyed) == expected, "Missing shared field or unsupported variable/mount"
     for field in configs:
         assert field.get("Required") == "true"
@@ -72,9 +81,13 @@ def validate_variant(tag, root):
     models = keyed[("Path", "/app/models")]
     assert models.get("Mode") == "rw"
     assert models.text == "/mnt/user/appdata/audio-cpp/models"
-    if gpu:
+    if nvidia:
         assert keyed[("Variable", "NVIDIA_VISIBLE_DEVICES")].text == "all"
         assert keyed[("Variable", "NVIDIA_DRIVER_CAPABILITIES")].text == "compute,utility"
+    if vulkan:
+        assert keyed[("Device", "/dev/dri")].text == "/dev/dri"
+        assert "llvmpipe" in keyed[("Device", "/dev/dri")].get("Description")
+        assert "NVIDIA" in root.findtext("Requires"), "Say the variant excludes NVIDIA"
 
 
 class TemplateTests(unittest.TestCase):
@@ -90,7 +103,7 @@ class TemplateTests(unittest.TestCase):
             self.assertTrue(self.root.findtext(tag), tag)
         self.assertEqual(self.root.findtext("Project"), "https://github.com/0xShug0/audio.cpp")
 
-    def test_three_complete_resolved_variants(self):
+    def test_every_resolved_variant_is_complete(self):
         resolved = list(variants(self.root))
         self.assertEqual([tag for tag, _ in resolved], list(TAGS))
         for tag, root in resolved:
@@ -235,11 +248,22 @@ class TemplateTests(unittest.TestCase):
             for user in ("", "--user=0:0", "--user=1000:1000", "--user=99:99"):
                 with self.subTest(variant=tag, user=user):
                     bad = deepcopy(root)
-                    bad.find("ExtraParams").text = " ".join(filter(None, (
-                        user, "--runtime=nvidia" if tag != "full-cpu" else ""
-                    )))
+                    rest = EXTRA_PARAMS[tag].replace("--user=99:100", "", 1)
+                    bad.find("ExtraParams").text = (user + rest).strip()
                     with self.assertRaisesRegex(AssertionError, "runtime options"):
                         validate_variant(tag, bad)
+
+    def test_vulkan_variant_has_no_nvidia_settings_and_cuda_has_no_device(self):
+        for tag, root in variants(self.root):
+            with self.subTest(variant=tag):
+                if BACKENDS[tag] == "vulkan":
+                    self.assertNotIn("nvidia", root.findtext("ExtraParams"))
+                    self.assertNotIn("nvidia", root.findtext("PostArgs"))
+                    targets = [field.get("Target") for field in root.findall("Config")]
+                    self.assertFalse([t for t in targets if t.startswith("NVIDIA")])
+                else:
+                    self.assertIsNone(root.find("Config[@Type='Device']"))
+                    self.assertNotIn("--group-add", root.findtext("ExtraParams"))
 
     def test_rejects_unsupported_identity_environment_variables(self):
         for tag, root in variants(self.root):

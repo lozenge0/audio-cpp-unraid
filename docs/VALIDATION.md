@@ -18,6 +18,7 @@ passing one variant does not complete every clause for all variants.
 | Fresh storage / Pocket TTS download | Passed on recorded CPU/CUDA images with 99:100 |
 | CPU short-text inference | Fixed image passes API, Studio, streaming and restart; owner playback confirmed |
 | CUDA 12 / CUDA 13 inference and restart | Passed on recorded images and RTX 3060 |
+| Vulkan (AMD/Intel) device access and inference | Not tested. Branch published 2026-09-13. First volunteer report pending |
 | Recreation | Passed controlled CUDA 12/13 tests, not all lifecycle paths |
 | Image update / retained-container rollback | Passed controlled CUDA 13 test, not full DockerMan or scheduled updates |
 | Public branch selector / variant switching | Pending supported workflow validation |
@@ -221,7 +222,7 @@ workflow. An authenticated owner browser session is also required.
 
 - [ ] Parse the XML and verify all repository references, required metadata,
   paths, ports and arguments. Resolve each image tag to a recorded digest.
-- [ ] Expand the default CPU template and every CUDA branch using the supported
+- [ ] Expand the default CPU template and every branch using the supported
   CA branch semantics. Branch overrides replace complete fields: a branch's
   `Config` list must include every shared path and port it needs.
 - [ ] Render every expanded template with the target Unraid DockerMan code,
@@ -279,6 +280,11 @@ personal deployment and other containers.
   during actual inference; health status and `nvidia-smi` alone are not proof.
 - [ ] CUDA 13: repeat with that image and record driver/GPU compatibility
   independently. Do not infer success from the CUDA 12 test.
+- [ ] Vulkan: run `server --backend vulkan --list-devices` inside the installed
+  container as its configured user and record the line that names the GPU with
+  type `[gpu]`. A `[cpu]` device (`llvmpipe`) is a failure of device access,
+  even if speech is generated. Then generate audio and record the GPU model,
+  host plugins, `/dev/dri` ownership and the container log.
 - [ ] Check both the browser and HTTP API, using the actual discovered model
   ID and supported voice. Record a minimal working API request.
 - [ ] On a shared GPU, measure memory use and confirm the test has not
