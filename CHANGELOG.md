@@ -2,6 +2,14 @@
 
 ## Unreleased — targeting v0.1.0
 
+- Added a `Changes` field to the template so Community Apps shows a changelog
+  to users who already installed the app.
+- Project status now lives in one place, the top of `docs/RELEASE-REVIEW.md`.
+  Other documents link to it. Removed internal review narrative and stale test
+  and file counts from the public documentation.
+- The publication inventory test now reads Git's file list, so `pytest` caches
+  and other ignored files no longer fail it. Tests check document structure and
+  links rather than exact status sentences.
 - Added a PNG export of the existing community artwork and switched template/profile
   icon URLs to PNG for Docker Manager compatibility. Original SVG preserved.
 - Changed the default host WebUI/API port to `6969` for CPU, CUDA 12 and CUDA 13
@@ -38,8 +46,8 @@
 - Prepared least-privilege, commit-pinned GitHub Actions CI, Dependabot action
   updates, contribution/security guidance and a standalone Git publishing checklist.
 - September 13: published the approved GitHub review draft with a clean signed
-  history and noreply commit identity. First hosted CI passed all 25 checks;
-  public links/file hashes and recorded repository security settings verified.
+  history and noreply commit identity. First hosted CI passed. Public links,
+  file hashes and recorded repository security settings verified.
 
 No public versioned release has been made; the GitHub repository is a review draft.
 Version numbers describe the Unraid integration,

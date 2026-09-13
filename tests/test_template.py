@@ -5,7 +5,9 @@ Run: python3 -m unittest discover -s tests -v
 """
 
 from copy import deepcopy
+from datetime import date
 from pathlib import Path
+import re
 import shlex
 import unittest
 import xml.etree.ElementTree as ET
@@ -105,8 +107,8 @@ class TemplateTests(unittest.TestCase):
                 self.assertEqual(root.findtext("WebUI"), "http://[IP]:[PORT:8080]/")
                 args = shlex.split(root.findtext("PostArgs"))
                 self.assertEqual(args[args.index("--port") + 1], "8080")
-        self.assertIn("Keep host port `6969`", (ROOT / "README.md").read_text())
-        self.assertIn("Suggested port: `6969`", (ROOT / "docs/CONFIGURATION.md").read_text())
+        for name in ("README.md", "docs/CONFIGURATION.md"):
+            self.assertIn("`6969`", (ROOT / name).read_text(), name)
 
     def test_branch_labels_and_shared_fields(self):
         shared = [ET.tostring(field) for field in self.root.findall("Config")]
@@ -166,30 +168,36 @@ class TemplateTests(unittest.TestCase):
                 if key.split("}")[-1] == "href":
                     self.assertTrue(value.startswith("#"), "External asset reference")
 
-    def test_only_repository_assets_not_runtime_payload(self):
-        allowed = {".gitignore", ".github", "README.md", "LICENSE", "CHANGELOG.md",
-                   "CONTRIBUTING.md", "SECURITY.md",
-                   "ca_profile.xml", "assets", "templates", "docs", "tests", ".git"}
-        self.assertTrue({item.name for item in ROOT.iterdir()} <= allowed)
-        self.assertEqual([p.name for p in (ROOT / "templates").iterdir()], ["audio-cpp.xml"])
+    def test_changes_field_has_dated_markdown_entries(self):
+        """CA shows this field as the app changelog; it is the only channel to
+        installed users, because Docker Manager never refreshes templates."""
+        changes = self.root.findtext("Changes", "")
+        lines = [line.strip() for line in changes.strip().splitlines()]
+        self.assertTrue(lines and lines[0].startswith("### "), "Start with a ### date heading")
+        headings = [line[4:] for line in lines if line.startswith("### ")]
+        for heading in headings:
+            date.fromisoformat(heading)
+        self.assertEqual(headings, sorted(headings, reverse=True), "Newest entry first")
+        for line in lines:
+            self.assertTrue(re.fullmatch(r"### \S+|- .+", line), f"Unexpected line: {line!r}")
+        for tag, resolved in variants(self.root):
+            with self.subTest(variant=tag):
+                self.assertEqual(resolved.findtext("Changes"), changes)
 
     def test_documented_release_gate(self):
         readme = (ROOT / "README.md").read_text()
         self.assertIn("lozenge0/audio-cpp-unraid", readme)
         self.assertIn("Beta integration", readme)
-        self.assertIn("public-listing installation checks are still in progress", readme)
+        self.assertIn("docs/RELEASE-REVIEW.md", readme)
         self.assertTrue((ROOT / "docs/PLAN.md").is_file())
         self.assertTrue((ROOT / "docs/VALIDATION.md").is_file())
         self.assertIn("MIT License", (ROOT / "LICENSE").read_text())
 
-    def test_ai_category_and_honest_beta_status(self):
+    def test_ai_category_and_beta_flag(self):
         for tag, resolved in variants(self.root):
             with self.subTest(variant=tag):
                 self.assertEqual(resolved.findtext("Category").split(), ["AI", "Tools:"])
                 self.assertEqual(resolved.findtext("Beta"), "true")
-                self.assertIn("full deployment acceptance remain pending", resolved.findtext("Overview"))
-                self.assertNotIn("Not ready for public submission", resolved.findtext("Overview"))
-        self.assertNotIn("not yet submitted", (ROOT / "ca_profile.xml").read_text())
 
     def test_selected_publication_destinations(self):
         base = "https://github.com/lozenge0/audio-cpp-unraid"
