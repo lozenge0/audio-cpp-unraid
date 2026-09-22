@@ -3,6 +3,7 @@ from pathlib import Path
 import re
 import subprocess
 import unittest
+from scripts.check_publication import PUBLIC_FILES, scan_content
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -17,20 +18,7 @@ def candidate_files():
         ['git', 'ls-files', '--cached', '--others', '--exclude-standard', '-z'],
         cwd=ROOT, check=True, capture_output=True, text=True).stdout
     return {name for name in output.split('\0') if name}
-EXPECTED = {
-    '.github/dependabot.yml', '.github/workflows/validate.yml',
-    '.gitignore', 'CHANGELOG.md', 'LICENSE', 'README.md',
-    'CONTRIBUTING.md', 'SECURITY.md',
-    'assets/README.md', 'assets/icon.svg', 'assets/icon.png', 'ca_profile.xml',
-    'docs/CONFIGURATION.md', 'docs/MAINTAINER.md', 'docs/RELEASE-REVIEW.md',
-    'docs/VALIDATION.md',
-    'docs/reports/CPU-RETEST-20260912.md', 'docs/reports/FIRST-RUN-FINDINGS.md',
-    'docs/reports/RECREATION-TEST.md', 'docs/reports/SHORT-TEXT-INVESTIGATION.md',
-    'docs/reports/UI-TEST-PREFLIGHT.md', 'docs/reports/UPDATE-ROLLBACK-TEST.md',
-    'docs/reports/USER-IDENTITY-TESTS.md',
-    'templates/audio-cpp.xml',
-    'tests/test_ci.py', 'tests/test_publication.py', 'tests/test_template.py',
-}
+EXPECTED = PUBLIC_FILES
 
 
 class PublicationTests(unittest.TestCase):
@@ -83,23 +71,9 @@ class PublicationTests(unittest.TestCase):
                     self.assertTrue(target.is_file())
 
     def test_no_selected_private_data_patterns_in_public_content(self):
-        # Tests themselves contain negative examples. SVG metadata is preserved;
-        # this plain-text check does not decode/clear provenance metadata.
-        patterns = (
-            r'/Users/', r'192\.168\.\d{1,3}\.\d{1,3}',
-            r'GPU-[0-9a-fA-F]{8}-',
-            r'-----BEGIN (?:OPENSSH |RSA |EC )?PRIVATE KEY-----',
-            r'\bgh[pousr]_[A-Za-z0-9]{30,}\b',
-            r'\bgithub_pat_[A-Za-z0-9_]{30,}\b',
-        )
         for name in sorted(EXPECTED):
-            if name.startswith('tests/') or name == 'assets/icon.png':
-                # PNG structure/chunk allowlist is checked by test_template.
-                continue
-            text = (ROOT / name).read_text()
-            for pattern in patterns:
-                with self.subTest(file=name, pattern=pattern):
-                    self.assertIsNone(re.search(pattern, text))
+            with self.subTest(file=name):
+                self.assertEqual(scan_content(name, (ROOT / name).read_bytes()), set())
 
 
 if __name__ == '__main__':

@@ -1,5 +1,8 @@
 # Native Docker user/group override: validation results
 
+> Privacy edit, 2026-09-20: unnecessary operational details have been omitted;
+> original test results and limitations are preserved.
+
 ## Outcome — 2026-09-06
 
 The isolated `--user=99:100` experiment succeeded for **CPU, CUDA 12 and CUDA 13**
@@ -9,8 +12,7 @@ running as root, adding a startup wrapper, or changing directory ownership/modes
 
 The local public-template draft adopted the override on 2026-09-07, with matching
 structural checks and documentation. That local adoption is not a new runtime
-test or a claim of complete Community Apps acceptance. The existing personal
-deployment was not modified.
+test or a claim of complete Community Apps acceptance.
 
 ## Controlled change
 
@@ -25,8 +27,8 @@ No `chown`, `chmod`, extra supplementary group, privileged mode or root executio
 was added. Temporary-directory write checks passed for CPU and CUDA 13; actual
 native downloads/inference exercised the temporary path for all three variants.
 
-The test used immutable upstream image digests to prevent the host's global
-auto-updater from changing the experiment. The public draft retains moving tags.
+The test used immutable upstream image digests to prevent image drift.
+The public draft retains moving tags.
 No global update/autostart settings were changed; the temporary container was
 removed after testing and was never added to Unraid autostart.
 
@@ -118,13 +120,9 @@ registration across restarts still requires the documented upstream JSON setup.
 
 ## Cleanup and retained evidence
 
-Only the isolated test container was stopped/removed. The three sets of downloaded
-stock test-model files, small harness and official images were retained for
-reproducibility; test appdata totals approximately 384 MiB and can be reused for
-the remaining tests. All three downloaded model GGUF files have SHA256
-`0315406421d515d9ffbde49ed998832ff2962562ef8abde440c85fa0a27d8b2a`. No production
-container, appdata, driver or host Docker configuration was changed.
+Only the isolated test container was stopped/removed. All three downloaded model
+GGUF files have SHA256
+`0315406421d515d9ffbde49ed998832ff2962562ef8abde440c85fa0a27d8b2a`.
+Unrelated services and data were unchanged.
 
-Screenshots, browser automation and validated WAV samples are local test artifacts
-under `build/unraid-ca-validation/` in the development workspace, outside this
-standalone public repository candidate.
+Raw test artifacts are excluded from this public repository.

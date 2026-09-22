@@ -1,5 +1,8 @@
 # First-run validation: model-directory permissions
 
+> Privacy edit, 2026-09-20: unnecessary operational details have been omitted;
+> original test results and limitations are preserved.
+
 Follow-up: the isolated native Docker `--user=99:100` experiment subsequently
 passed model download/inference checks for CPU, CUDA 12 and CUDA 13, with lifecycle
 checks. See [user-identity test results](USER-IDENTITY-TESTS.md). The original
@@ -40,9 +43,8 @@ inside that mount. Independent source review confirmed this matches the observed
 failed write check and browser error.
 
 The actual container command matched the reviewed CPU rendering except for using
-the pulled immutable image digest during this diagnostic session. The host has
-global container auto-updates enabled, so a fixed digest prevented a rolling image
-change during testing. The public template still follows the moving upstream tag.
+the pulled immutable image digest during this diagnostic session. A fixed digest
+prevented image drift during testing. The public template follows the moving tag.
 This test did not exercise the real CA branch-selector UI or its update workflow.
 
 - Upstream tag pulled: `ghcr.io/0xshug0/audio.cpp:full-cpu`
@@ -77,7 +79,4 @@ Do not silently run the application as root, add a wrapper, recursively loosen
 appdata permissions, or change an existing shared directory.
 
 The temporary test container was stopped and removed after evidence collection.
-Its small harness/fresh appdata and pulled CPU image were retained; no model
-weights were downloaded. The production service remained running and healthy.
-No driver, host Docker settings, global updater settings or production appdata
-were changed.
+No model weights were downloaded. Unrelated services and data were unchanged.

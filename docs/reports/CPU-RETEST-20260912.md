@@ -1,11 +1,14 @@
 # Official CPU image regression retest — 2026-09-12
 
+> Privacy edit, 2026-09-20: unnecessary operational details have been omitted;
+> original test results and limitations are preserved.
+
 ## Scope and image
 
 Retest Pocket TTS English GGUF Q8 short-text speech on Unraid 7.3.2 with a
 Ryzen 7 3700X. The previous official CPU image, revision `b075757`, exited 139
 with `GGML_ASSERT(tensor->buffer == NULL)` after the owner's `hello` request.
-The original failed container and logs were retained; it was not rerun today.
+The previous failing image was not rerun in this retest.
 
 The official `full-cpu` tag resolved on September 12 to:
 
@@ -25,10 +28,9 @@ claim that all possible short-text failures have been fixed.
 ## Isolation
 
 A separately named CPU retest container uses a copy of the old test's model
-directory, with hashes and ownership checked before deployment. Existing CPU,
-CUDA 12 and personal containers/data are preserved. Only the isolated CUDA 13
-test was stopped to release the shared test port. No existing container was
-deleted or renamed, and no saved Unraid template or updater setting was edited.
+directory, with hashes and ownership checked before deployment. An unused test
+port and dedicated storage kept the retest isolated from unrelated services.
+No saved Unraid template or updater setting was edited.
 The deployment harness and actual image/configuration snapshot were independently
 reviewed before creation/start.
 
@@ -71,10 +73,8 @@ this is not automatic registration persistence.
 
 Final checks confirmed the original and copied model files, UID/GID and modes
 were unchanged. All pre-existing audio.cpp container configurations and saved
-Unraid XML files matched the before snapshot. The new pinned CPU retest remains
-running on host port 18081; CUDA 13 is retained stopped, and the personal service
-and old failed CPU container remain untouched. No files, containers or images
-were deleted.
+Unraid XML files matched the before snapshot. Unrelated services and data
+were unchanged.
 
 Independent final review verified all nine successful WAVs and six streaming
 PCM outputs were non-silent, the before/after model manifests matched, and logs

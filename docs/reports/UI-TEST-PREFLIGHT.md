@@ -1,13 +1,13 @@
 # Unraid UI validation preflight — 2026-09-07
 
+> Privacy edit, 2026-09-20: unnecessary operational details have been omitted;
+> original test results and limitations are preserved.
+
 ## Result
 
 Read-only checks passed on Unraid 7.3.2 with Community Applications 2026.07.21.
-The existing personal service remained running and healthy with its container
-identity unchanged. No isolated test container existed, and the selected test
-port was free. Docker image storage had approximately 67 GiB available; cache
-storage approximately 816 GiB. The retained official CPU/CUDA images and test
-models were available. No deployment or server configuration writes were made.
+Test isolation and sufficient storage were checked before proceeding.
+No deployment or server configuration writes were made.
 
 Two prerequisites affect the next UI tests:
 
@@ -48,8 +48,8 @@ cache to represent a supported installation test.
   digests for controlled runtime tests. Record that difference in the evidence.
 - Run one test container at a time. No production mappings, global updater
   changes, driver changes or test autostart entries.
-- The host has global container updates enabled; do not invoke a global update
-  job to test one container. Pin controlled experiments and review the specific
+- Do not invoke a global update job to test one container. Pin controlled
+  experiments and review the specific
   single-container update/recreation path before use.
 - Test distinct upstream image versions and rollback against isolated data,
   preserving the Docker user/group and selected GPU settings. Same-image
@@ -65,18 +65,14 @@ test was completed during this preflight.
 
 ## Private entries staged — 2026-09-07
 
-After the owner logged into Apps in their own Brave browser, an independently
-reviewed generator produced three pre-expanded test copies outside this public
-repository candidate. Copies were staged only in the new private repository
-directory `/boot/config/plugins/community.applications/private/audio-cpp-ca-ui-test/`.
+After authenticated browser access, an independently reviewed generator produced
+three pre-expanded test copies outside this public repository candidate.
+Copies were staged in a dedicated CA private-app directory.
 Local and server SHA256 checksums matched for all three files.
 
-The test names are `audio-cpp-test-cpu`, `audio-cpp-test-cuda12` and
-`audio-cpp-test-cuda13`. They share test port 18081 (only one may run at a time),
-with fresh per-variant model paths under the separate UI-test storage root.
-No model directories or containers were created by staging. The existing
-personal container remained healthy and unchanged. No global updater settings
-or existing templates were modified.
+Each variant used an isolated name, unused port and fresh model path.
+No model directories or containers were created by staging.
+No existing templates or unrelated services were modified.
 
 Next owner action: return to Apps Home, open Private Apps and choose the CPU
 test's Install action, stopping before Apply. Confirm the actual form's name,

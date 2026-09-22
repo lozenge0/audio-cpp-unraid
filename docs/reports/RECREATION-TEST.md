@@ -1,5 +1,8 @@
 # CUDA 13 same-image recreation — 2026-09-09
 
+> Privacy edit, 2026-09-20: unnecessary operational details have been omitted;
+> original test results and limitations are preserved.
+
 ## Outcome
 
 The isolated CUDA 13 container was stopped, removed without deleting volumes,
@@ -10,7 +13,7 @@ rollback, scheduled update or the CA public branch selector.
 
 The owner approved this exact test. Independent subagent review preceded the
 destructive step and reviewed the one Docker default normalization described
-below. The personal service and other test containers remained unchanged.
+below. Unrelated services and data were unchanged.
 
 ## Image, settings and preservation
 
@@ -24,9 +27,8 @@ below. The personal service and other test containers remained unchanged.
   retained, not added to public template defaults.
 - Before/after manifests matched for every model file's SHA256, file/directory
   sizes, owners and modes, including package metadata and the Alba embedding.
-- The saved Unraid user template remained byte-identical. Config, HostConfig
-  and State of the personal service and two other audio.cpp tests were checked
-  against their snapshots; none were changed by this operation.
+- The saved Unraid user template remained byte-identical. Isolation checks
+  confirmed that unrelated services were unchanged.
 - No image pull, model download, ownership change or global updater change was
   made. Original container logs and configuration were preserved locally before
   removal; only the replaced container's disposable writable layer was removed.
@@ -71,15 +73,7 @@ successful results do not imply all similar warnings are harmless.
 
 ## Evidence and remaining work
 
-Private snapshots, request harness, logs, checksums and replacement payload are
-under `build/unraid-ca-validation/recreate-cuda13-20260909/` in the surrounding
-development checkout. WAVs and the Studio screenshot use the
-`cuda13-recreated-*-20260909` prefix in its parent directory. These are testing
-artifacts, not code or personal configuration shipped by the community app.
-
-The recreated CUDA 13 test remains running on the isolated test port. The old
-container object no longer exists; saved settings, unchanged official image
-and retained model storage allow another recreation if necessary.
+Raw test artifacts are excluded from this public repository.
 
 Next lifecycle gate: distinct official-image update and rollback, separately
 reviewed and authorized. Do not reuse this same-image payload for upgrades: it

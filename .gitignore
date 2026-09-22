@@ -3,3 +3,8 @@ __pycache__/
 *.pyc
 .pytest_cache/
 .validation-output/
+.serena/
+.env
+.env.*
+*.pem
+*.key

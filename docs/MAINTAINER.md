@@ -56,8 +56,9 @@ repository. Nothing here changes an existing personal installation.
 - `docs/RELEASE-REVIEW.md`: current status, evidence and remaining gates.
 - `docs/VALIDATION.md`: acceptance checklist and evidence requirements.
 - `docs/reports/`: dated experiment reports. They record what was known at
-  the time and are not updated later.
+  the time. Label privacy amendments; preserve original test conclusions.
 - `tests/`: maintainer-only structural checks, never shipped into the container.
+- `scripts/check_publication.py` and `.githooks/`: publication checks.
 - `.github/`: read-only CI checks and Dependabot updates for the CI actions only.
 
 The project is called **audio.cpp for Unraid**. The template and container name
@@ -74,12 +75,49 @@ python3 -m unittest discover -s tests -v
 
 These checks validate local structural invariants, not the CA parser, live
 registry availability, hardware, browser workflows or installation success.
-The publication test holds the exact list of files that belong in the
-repository. If you add a file, review its publication safety first, then add
-it to that list.
+The publication test uses the exact inventory in `scripts/check_publication.py`.
+If you add a file, review its publication safety first, then add it to that list.
 
-GitHub Actions runs the same tests on pushes, pull requests and manual
-dispatch. The workflow uses GitHub-hosted Ubuntu, a read-only repository token,
+Follow the identity and hook setup in [Contributing](../CONTRIBUTING.md) for each
+checkout. The pre-commit hook inspects the index, not unstaged working files.
+The pre-push hook inspects the commits actually being sent, including intermediate
+trees and commit/tag identities. It fails closed when history cannot be read.
+History checks reject shallow clones. Fetch the full history before retrying.
+The push hook queries the actual push destination and excludes history reachable
+from its advertised branch tips that can be resolved locally. Missing local
+objects exclude nothing; stale remote-tracking refs are never used as evidence
+of publication. A destination query failure blocks the push. Other checks run
+offline.
+Local tool state is ignored, and ignored files are still rejected if force-added.
+
+For a read-only audit of all history reachable from HEAD, run:
+
+```sh
+python3 scripts/check_publication.py --since ''
+```
+
+Use `--since BASE_COMMIT` to inspect only subsequent commits, optionally ending
+at `--tip COMMIT` instead of HEAD. Pull-request CI audits the actual proposed
+commits from base to head, excluding GitHub's synthetic test-merge identity;
+structural tests still run on the merged tree. Push CI uses the pre-push branch
+tip as its base. Manual dispatch checks the selected commit
+and its full tree with `--commit HEAD`; it is not a full-history audit.
+Historical privacy findings can therefore fail a full audit even after current
+files are sanitized. Do not suppress them to claim the history has been cleaned.
+Existing published history has identity, message-email and historical-inventory
+findings under the new policy. Excluding already-published ancestors from a push
+check does not remediate those findings or certify that history as clean.
+GitHub browser merges also need a public author name; local configuration cannot
+control that separate identity.
+
+Checks cover selected credential formats, private addresses, home paths and
+email addresses across all approved files, including tests. SVG C2PA provenance
+is decoded and scanned; PNG metadata is restricted. This is not exhaustive
+secret detection or proof of anonymity. Review prose and other encoded content
+manually, and retain GitHub secret scanning and push protection.
+
+GitHub Actions runs the tests and commit publication checks on pushes, pull
+requests and manual dispatch. The workflow uses GitHub-hosted Ubuntu, a read-only repository token,
 commit-pinned official actions and no persisted checkout credentials. There are
 no application builds, deployments, artifact uploads, scheduled server tasks,
 custom secrets or access to Unraid. Do not add an Unraid SSH key or API token to
@@ -118,8 +156,16 @@ See [contribution guidance](../CONTRIBUTING.md) and
 Never publish the surrounding audio.cpp checkout. If the repository is ever
 restaged, start from a new directory and make sure that
 `git rev-parse --show-toplevel` points at it. Copy only the files in the
-publication list. Use the GitHub noreply commit identity and a fresh root
+publication list. Use a public handle and matching GitHub noreply commit identity, with a fresh root
 commit. Never force-push.
+
+Removing data from current files or changing the local identity does not erase
+published commits. History remediation requires a separately reviewed rewrite
+in an isolated copy, verification of all affected refs, and explicit approval
+before any protected-branch exception or remote replacement. Rewritten commits
+lose their old signatures and IDs. Forks, existing clones and cached pull-request
+views can retain earlier objects; follow
+[GitHub's sensitive-data removal guidance](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository).
 
 ## Ongoing maintenance
 

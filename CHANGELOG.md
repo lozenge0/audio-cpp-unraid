@@ -12,6 +12,10 @@ Targeting `v0.1.0`, the first beta release.
 
 ### Added
 
+- Local publication hooks and broader content/commit-identity checks, including
+  outgoing history, tests and embedded SVG provenance.
+- History checks reject shallow clones. Push checks use the destination's
+  advertised history; manual CI checks the selected commit and complete tree.
 - Community Apps template for audio.cpp with CPU, NVIDIA CUDA 12 and NVIDIA
   CUDA 13 variants, using unmodified upstream Docker images.
 - Model storage, host port and NVIDIA GPU selection fields.
@@ -25,6 +29,8 @@ Targeting `v0.1.0`, the first beta release.
 
 ### Changed
 
+- Public test reports omit unnecessary server operational details. Original
+  technical evidence and test conclusions are preserved.
 - New installations default to host port `6969`. Existing installations keep
   their configured port.
 - Every variant runs as Docker user `99:100`, which matches the ownership of

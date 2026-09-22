@@ -2,7 +2,7 @@
 
 ## Status
 
-Updated 2026-09-13 (Europe/London). Target: **audio.cpp for Unraid v0.1.0**.
+Updated 2026-09-13. Target: **audio.cpp for Unraid v0.1.0**.
 This section is the single source for project status. Other documents link
 here instead of repeating it.
 
@@ -107,8 +107,8 @@ then Validate/Scan.
 
 ## Repository contents
 
-The publication test in `tests/test_publication.py` holds the exact list of
-files that belong in the repository and compares it with Git's file inventory.
+The publication test uses the exact list in `scripts/check_publication.py`
+and compares it with Git's file inventory.
 Add a new file to that list only after a publication-safety review.
 
 Never include the parent checkout/history, `speak.sh`, `.devops/unraid`, SSH/API
@@ -128,7 +128,7 @@ pull request. No image build, custom CI credentials or server access is required
 
 ## GitHub publication record
 
-Published September 13 (Europe/London).
+Published September 13.
 
 - Public repository: [lozenge0/audio-cpp-unraid](https://github.com/lozenge0/audio-cpp-unraid),
   default branch `main`, Issues enabled.
@@ -146,6 +146,6 @@ Published September 13 (Europe/London).
   README/template/profile/icon hashes matched local files. This does not validate
   the CA UI or public branch picker.
 
-The first commit and CI timestamps are September 12 in UTC (after midnight
-September 13 locally). Dated runtime evidence has not been rerun for publication.
+The first commit and CI timestamps are September 12 in UTC.
+Dated runtime evidence has not been rerun for publication.
 No Unraid operations were performed.
