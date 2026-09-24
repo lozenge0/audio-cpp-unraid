@@ -24,6 +24,12 @@ class CIPolicyTests(unittest.TestCase):
             'permissions:\n  contents: read\n',
             'persist-credentials: false', 'runs-on: ubuntu-24.04',
             'timeout-minutes: 5', 'python -m unittest discover -s tests -v',
+            'fetch-depth: 0',
+            'python scripts/check_publication.py --since "$PUBLICATION_BASE" --tip "$PUBLICATION_TIP"',
+            'PUBLICATION_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}',
+            'PUBLICATION_TIP: ${{ github.event.pull_request.head.sha || github.sha }}',
+            'if [ -n "$PUBLICATION_BASE" ]; then',
+            'python scripts/check_publication.py --commit HEAD',
         ):
             self.assertIn(required, self.workflow)
         for forbidden in ('pull_request_target', 'self-hosted', 'secrets.',

@@ -1,5 +1,8 @@
 # Controlled CUDA 13 image update and rollback
 
+> Privacy edit, 2026-09-20: unnecessary operational details have been omitted;
+> original test results and limitations are preserved.
+
 Prepared 2026-09-09; executed and verified 2026-09-10.
 
 ## Outcome and scope
@@ -47,16 +50,14 @@ settings were carried over. Old CUDA-library environment variables and old OCI
 image labels were not copied into the new image.
 
 The test preserved UID/GID 99:100, NVIDIA runtime, the selected RTX 3060,
-`compute,utility`, bridge networking, host port 18081 and the sole dedicated
+`compute,utility`, bridge networking, an isolated host port and the sole dedicated
 model mount. Privileged mode and automatic restart remained disabled. A strict
 pre-start check paused on Docker's `OomKillDisable` null-to-false normalization;
 only that known default-equivalent difference was independently reviewed and
 accepted. All other compared HostConfig settings had to match.
 
-The personal service, CPU test and CUDA 12 test retained their original IDs,
-configuration and stopped state. Their snapshots and the unchanged Unraid user
-template were checked throughout. Global updater settings were not changed and
-no global update job was invoked.
+Isolation checks confirmed that unrelated services and the saved Unraid user
+template were unchanged. No global update job was invoked.
 
 ## Speech and persistence results
 
@@ -94,16 +95,10 @@ Because model data remained unchanged, backup restoration was unnecessary;
 the test would have paused before rollback if data differed.
 
 The original container was renamed back and started. Its original ID, image,
-Config and HostConfig were verified. The final isolated test is running on the
-**original** pinned CUDA 13 image, not the candidate. No rollback-named container
-remains. The approximately 128 MiB model backup and both official images are
-retained; neither was deleted or pruned.
+Config and HostConfig were verified. Rollback restored the **original** pinned
+CUDA 13 image and its settings.
 
-Private evidence remains outside this public repository candidate under
-`build/unraid-ca-validation/update-cuda13-20260909/`. Generated WAVs/screenshots
-are in its parent directory with `cuda13-upgraded-` or `cuda13-rollback-` prefixes
-and the date `20260910`. The harness and personal test settings are not shipped
-as community-app runtime code.
+Raw test artifacts are excluded from this public repository.
 
 Remaining gates include the fixed CPU image retest, optional persistent JSON,
 public CA branch-selector validation, and the actual Unraid updater workflow.

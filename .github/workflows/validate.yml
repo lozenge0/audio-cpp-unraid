@@ -23,9 +23,19 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+          fetch-depth: 0
       - name: Set up Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: '3.12'
       - name: Run offline checks
-        run: python -m unittest discover -s tests -v
+        env:
+          PUBLICATION_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+          PUBLICATION_TIP: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          python -m unittest discover -s tests -v
+          if [ -n "$PUBLICATION_BASE" ]; then
+            python scripts/check_publication.py --since "$PUBLICATION_BASE" --tip "$PUBLICATION_TIP"
+          else
+            python scripts/check_publication.py --commit HEAD
+          fi

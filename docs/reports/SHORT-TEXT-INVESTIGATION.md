@@ -1,5 +1,8 @@
 # Short-text CPU crash: investigation plan
 
+> Privacy edit, 2026-09-20: unnecessary operational details have been omitted;
+> original test results and limitations are preserved.
+
 Prepared 2026-09-08. Follow-up: [official CPU image retest](CPU-RETEST-20260912.md)
 records the September 12 results. The historical plan below is not a claim that
 every proposed comparison was executed. Execution and
@@ -26,7 +29,7 @@ an image/build difference, process identity, request mode, or integration settin
 
 ## Isolation rules
 
-Use one isolated test container at a time, port 18081, and dedicated test storage.
+Use one isolated test container at a time, an unused port and dedicated test storage.
 Recheck current server state before starting; do not assume yesterday's state.
 Never stop, start, edit or reuse the personal container's configuration/data.
 Check full container identity and mappings before every lifecycle operation.
@@ -53,7 +56,7 @@ default male voice. Confirm the expected `demo_1_man` ID from the request itself
 Replay the same request and required setup directly against the isolated API.
 If API replay crashes identically, the browser is not necessary to trigger it.
 If only Studio fails, compare request sequencing, cancellation and overlap before
-blaming Brave or changing the inference backend. Distinguish HTTP response
+blaming the browser or changing the inference backend. Distinguish HTTP response
 streaming from an application-level incremental audio-generation setting.
 
 ## 2. Establish a repeatable CPU baseline

@@ -1,5 +1,8 @@
 # Validation and release acceptance
 
+> Privacy edit, 2026-09-20: unnecessary operational details have been omitted;
+> original test results and limitations are preserved.
+
 This integration is under development. Source inspection and XML checks do not
 establish that its installation flows work. Record the date, Unraid and
 Community Applications versions, image digest, hardware, model package and
@@ -40,17 +43,12 @@ The specific short-text crash gate is cleared for this tested image/model/host;
 full release acceptance is not implied. Current Studio offers Alba for Pocket TTS;
 the former male demo voice passed API/streaming tests separately.
 
-The separate CPU retest is now running on port 18081. The earlier CUDA 13 test
-was stopped and retained to free that port; the personal container remains untouched.
-
 ### Controlled CUDA 13 update/rollback — 2026-09-10
 
 The independently reviewed isolated image update and retained-container rollback
 passed short/long API speech, Studio generation, CUDA computation, configuration
-and model-data checks. See [full results](reports/UPDATE-ROLLBACK-TEST.md). The original
-pinned CUDA 13 test was restored and running at that test's completion; it was
-later stopped for the September 12 CPU retest. This is not CA scheduled-updater
-or full DockerMan-update acceptance.
+and model-data checks. See [full results](reports/UPDATE-ROLLBACK-TEST.md).
+This is not CA scheduled-updater or full DockerMan-update acceptance.
 
 ### CUDA 12 owner-operated UI test — 2026-09-09
 
@@ -88,11 +86,9 @@ healthy CUDA backend, loaded Pocket TTS, unchanged GGUF checksum and user 99:100
 This covers owner-operated restart and model reuse, not automatic restoration
 of dynamic model registrations or image replacement.
 
-After independent CUDA 13 preflight review, only the verified CUDA 12 test
-container was stopped to release port 18081. It exited cleanly (0); its container
-and downloaded files were retained. The personal service remained stopped and
-unchanged. The staged CUDA 13 template matched its reviewed checksum, its model
-path was absent, and its retained pinned image matched revision `b075757`.
+After independent CUDA 13 preflight review, an unused test port and fresh model
+path were confirmed. The staged template matched its reviewed checksum and the
+pinned image matched revision `b075757`.
 CUDA 13 UI installation then proceeded as recorded below.
 
 ### CUDA 13 owner-operated UI test — 2026-09-09
@@ -101,7 +97,7 @@ After screenshot review, the owner installed the private CUDA 13 test through
 Unraid's form. Inspection confirmed pinned upstream digest
 `sha256:f89dfcdccd5d54755fde3e670abd2a29d1ddc83df7aedc27a4bef83c9bffd45d`,
 revision `b075757`, user 99:100, NVIDIA runtime, the selected RTX 3060 UUID and
-`compute,utility` capabilities. Port 18081 and the fresh dedicated CUDA 13 model
+`compute,utility` capabilities. The isolated port and fresh dedicated CUDA 13 model
 mount matched the reviewed test settings; privileged mode was disabled.
 
 The owner reports successful native Pocket TTS GGUF Q8 download and playback
@@ -202,16 +198,9 @@ the protocol below is not a claim that every clause has been completed.
 
 ## Existing evidence and its limits
 
-The earlier personal deployment on Unraid 7.3.2 used an RTX 3060 with 12 GiB of
-VRAM, an explicitly pinned CUDA 12 image and a prepared server configuration.
-That deployment produced speech using CUDA and was checked for restart
-persistence and idle unloading. Its appdata ownership was prepared explicitly.
-
-Those results support the feasibility of running audio.cpp on this server.
-They do not validate this integration's branch selector, empty-appdata setup,
-CPU image, CUDA 13 image, or future image updates. All variants of the new
-template need the checks below. Do not mark a new check complete solely because
-the personal deployment passed a similar check.
+Results from preconfigured deployments do not validate this integration's branch
+selector, empty-appdata setup or future image updates. All variants need the
+checks below; a similar result elsewhere does not complete an acceptance check.
 
 ## 1. Template and branch checks
 
